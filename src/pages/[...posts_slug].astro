@@ -137,7 +137,7 @@ const { Content, headings, remarkPluginFrontmatter } = await render(post)
     <!-- TOC -->
     {post.data.toc && <TOC headings={headings} />}
     <!-- Content -->
-    <div id="post-content">
+    <div id="post-content" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
       <Content />
       <!-- Copyright -->
       <div id="post-copyright" />

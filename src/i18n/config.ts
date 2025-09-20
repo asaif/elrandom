@@ -1,6 +1,6 @@
 // Global Language Map
 export const langMap: Record<string, string[]> = {
-  'ae': ['ar-EG'],
+  'ar': ['ar-EG'],
   'en': ['en-US'],
 }
 
