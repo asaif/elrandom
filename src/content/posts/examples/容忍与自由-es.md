@@ -4,7 +4,7 @@ published: 1959-03-16
 tags:
   - Hu Shih
   - Literatura Moderna
-lang: es
+lang: ar
 abbrlink: tolerance-freedom
 ---
 
