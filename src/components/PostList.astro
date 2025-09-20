@@ -32,7 +32,10 @@ export interface Props {
         lg={isHome ? 'mb-10' : ''}
       >
         {/* post title */}
-        <h3 class="inline transition-colors hover:c-primary">
+        <h3
+          dir={lang === 'ar' ? 'rtl' : 'ltr'}
+          class="inline transition-colors hover:c-primary"
+        >
           <a
             class="cjk:tracking-0.02em"
             lg={isHome ? 'font-medium text-4.5' : ''}
@@ -75,6 +78,7 @@ export interface Props {
         {/* desktop post description */}
         {isHome && (
           <div
+            dir={lang === 'ar' ? 'rtl' : 'ltr'}
             class="heti hidden"
             lg="mt-2.25 block"
           >
