@@ -1,0 +1,169 @@
+/* Complete Arabic Support - All Elements */
+
+/* ====== FONTS ====== */
+
+/* 1. Arabic Site Title Font - Gulzar */
+:lang(ar) .font-title,
+:lang(ar) header h1,
+:lang(ar) header h2 {
+  font-family: 'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif !important;
+}
+
+/* 2. Arabic Navigation Font - Gulzar */
+:lang(ar) .font-navbar,
+:lang(ar) nav,
+:lang(ar) nav a,
+:lang(ar) nav ul,
+:lang(ar) nav li {
+  font-family: 'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif !important;
+}
+
+/* 3. Arabic Post Content Font - Amiri */  
+:lang(ar) .heti,
+:lang(ar) .font-serif,
+:lang(ar) main .heti,
+:lang(ar) article {
+  font-family: 'Amiri', 'Noto Serif Arabic', 'Times New Roman', serif !important;
+}
+
+/* 4. Arabic Footer Font - Gulzar */
+:lang(ar) footer,
+:lang(ar) footer p,
+:lang(ar) footer a {
+  font-family: 'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif !important;
+}
+
+/* ====== RTL LAYOUT ====== */
+
+/* 5. Site Title RTL */
+:lang(ar) header,
+:lang(ar) header h1,
+:lang(ar) header h2,
+:lang(ar) #site-title-link {
+  direction: rtl;
+  text-align: right;
+}
+
+/* 6. Navigation RTL */
+:lang(ar) nav,
+:lang(ar) nav ul,
+:lang(ar) nav li,
+:lang(ar) nav a {
+  direction: rtl;
+  text-align: right;
+}
+
+/* 7. Main Content RTL */
+:lang(ar) .heti,
+:lang(ar) main,
+:lang(ar) article {
+  direction: rtl;
+  text-align: right;
+}
+
+/* 8. Footer RTL */
+:lang(ar) footer,
+:lang(ar) footer p,
+:lang(ar) footer a {
+  direction: rtl;
+  text-align: right;
+}
+
+/* ====== BUTTON POSITIONING FOR RTL - CORRECTED ====== */
+
+/* 9. Desktop: Keep buttons on the RIGHT side for Arabic */
+/* 10. Mobile: Move buttons to the LEFT side for Arabic */
+
+/* Mobile button positioning for Arabic */
+@media (max-width: 1023px) {
+  :lang(ar) div:has(> #language-switcher),
+  :lang(ar) div:has(> #theme-toggle-button) {
+    right: auto !important;
+    left: 7.25vw !important;
+    z-index: 9999 !important; /* Ensure buttons appear above title */
+  }
+  
+  /* Fallback selector for mobile */
+  :lang(ar) div[class*="absolute"][class*="gap-6"] {
+    right: auto !important;
+    left: 7.25vw !important;
+    z-index: 9999 !important;
+  }
+}
+
+/* Desktop: Keep original positioning (right side) for Arabic */
+@media (min-width: 1024px) {
+  :lang(ar) div:has(> #language-switcher),
+  :lang(ar) div:has(> #theme-toggle-button) {
+    /* Don't change desktop positioning - keep on right */
+    z-index: 9999 !important; /* But ensure they're above other content */
+  }
+  
+  :lang(ar) div[class*="lg:fixed"][class*="gap-6"] {
+    z-index: 9999 !important;
+  }
+}
+
+/* ====== SPACING REDUCTION (ALL LANGUAGES) ====== */
+
+/* 10. Reduce Header Spacing */
+header:not(.post-header) {
+  margin-bottom: 1.5rem !important;
+}
+
+/* 11. Reduce Navigation Spacing */
+nav[aria-label="Site Navigation"] {
+  margin-bottom: 2rem !important;
+}
+
+/* ====== MOBILE RTL SUPPORT (KEEP AS IS) ====== */
+
+/* 12. Mobile RTL Layout - Don't move buttons */
+@media (max-width: 1023px) {
+  :lang(ar) header,
+  :lang(ar) nav,
+  :lang(ar) main,
+  :lang(ar) footer {
+    direction: rtl;
+    text-align: right;
+  }
+  
+  :lang(ar) nav ul {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  
+  /* Remove mobile button positioning - let buttons stay on right */
+}
+
+/* ====== TEXT FLOW IMPROVEMENTS ====== */
+
+/* 13. Arabic Text Direction for All Elements */
+:lang(ar) h1,
+:lang(ar) h2, 
+:lang(ar) h3,
+:lang(ar) h4,
+:lang(ar) h5,
+:lang(ar) h6,
+:lang(ar) p,
+:lang(ar) li,
+:lang(ar) a,
+:lang(ar) span,
+:lang(ar) div {
+  direction: rtl;
+  text-align: right;
+}
+
+/* 14. Arabic List Styling */
+:lang(ar) ul,
+:lang(ar) ol {
+  direction: rtl;
+  text-align: right;
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+/* 15. Arabic Link Styling */
+:lang(ar) a {
+  direction: rtl;
+}
