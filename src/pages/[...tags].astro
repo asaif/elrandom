@@ -2,7 +2,7 @@
 import TagList from '@/components/TagList.astro'
 import { defaultLocale, moreLocales } from '@/config'
 import Layout from '@/layouts/Layout.astro'
-import { getAllTags } from '@/utils/content'
+import { getAllTags, getPostsGroupByTags } from '@/utils/content'
 
 export async function getStaticPaths() {
   type PathItem = {
@@ -31,14 +31,27 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.props
 const allTags = await getAllTags(lang)
+const tagMap = await getPostsGroupByTags(lang)
+
+// Add post counts to tags for better sorting
+const tagsWithCounts = allTags.map(tag => ({
+  name: tag,
+  count: tagMap.get(tag)?.length || 0
+}))
+
+// Sort by post count (most popular first)
+const sortedTags = tagsWithCounts
+  .sort((a, b) => b.count - a.count)
+  .map(tag => tag.name)
 ---
 
 <Layout>
   <!-- Decorative Line -->
   <div class="uno-decorative-line" />
-  <!-- Tag List -->
+  
+  <!-- Simple Tag List with better sorting -->
   <TagList
-    tags={allTags}
+    tags={sortedTags}
     lang={lang}
   />
 </Layout>
