@@ -5,9 +5,13 @@ import { getPageInfo } from '@/utils/page'
 const { currentLang, isHome, isPost, isTag, isAbout, getLocalizedPath } = getPageInfo(Astro.url.pathname)
 const currentUI = ui[currentLang as keyof typeof ui] ?? {}
 
+// Check if current page is archive
+const isArchive = Astro.url.pathname.includes('/archive')
+
 const isPostActive = isHome || isPost
 const isTagActive = isTag
 const isAboutActive = isAbout
+const isArchiveActive = isArchive
 
 function getNavItemClass(isActive: boolean) {
   return isActive
@@ -30,6 +34,11 @@ const navItems = [
     href: '/about/',
     label: currentUI.about,
     className: getNavItemClass(isAboutActive),
+  },
+  {
+    href: '/archive/',
+    label: currentUI.archive || 'Archive',
+    className: getNavItemClass(isArchiveActive),
   },
 ]
 ---
