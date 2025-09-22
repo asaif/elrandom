@@ -7,6 +7,9 @@ export const ui = {
     tags: 'التصنيفات',
     about: 'عنّي',
     toc: 'فهرس المحتويات',
+    archive: 'المحفوظات',
+    archiveDescription: 'ترتيب سنوي للمقالات'
+
   },
   'en': {
     title: 'Arrandom',
@@ -16,5 +19,8 @@ export const ui = {
     tags: 'Tags',
     about: 'About',
     toc: 'Table of Contents',
+    archive: 'Archive',
+    archiveDescription: 'A chronological collection of all posts'
+
   },
 }
