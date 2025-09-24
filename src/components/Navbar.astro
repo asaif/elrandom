@@ -1,46 +1,9 @@
 ---
-import { ui } from '@/i18n/ui'
+import { getNavigationItemsWithClasses } from '@/utils/navigation'
 import { getPageInfo } from '@/utils/page'
 
-const { currentLang, isHome, isPost, isTag, isAbout, getLocalizedPath } = getPageInfo(Astro.url.pathname)
-const currentUI = ui[currentLang as keyof typeof ui] ?? {}
-
-// Check if current page is archive
-const isArchive = Astro.url.pathname.includes('/archive')
-
-const isPostActive = isHome || isPost
-const isTagActive = isTag
-const isAboutActive = isAbout
-const isArchiveActive = isArchive
-
-function getNavItemClass(isActive: boolean) {
-  return isActive
-    ? 'highlight-static c-primary font-bold after:bottom-0.7em'
-    : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:(c-primary font-bold)'
-}
-
-const navItems = [
-  {
-    href: '/',
-    label: currentUI.posts,
-    className: getNavItemClass(isPostActive),
-  },
-  {
-    href: '/tags/',
-    label: currentUI.tags,
-    className: getNavItemClass(isTagActive),
-  },
-  {
-    href: '/about/',
-    label: currentUI.about,
-    className: getNavItemClass(isAboutActive),
-  },
-  {
-    href: '/archive/',
-    label: currentUI.archive || 'Archive',
-    className: getNavItemClass(isArchiveActive),
-  },
-]
+const { isPost, getLocalizedPath } = getPageInfo(Astro.url.pathname)
+const navItems = getNavigationItemsWithClasses(Astro.url.pathname)
 ---
 
 <!-- Desktop Navigation - Hidden on mobile -->

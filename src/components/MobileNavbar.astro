@@ -54,108 +54,55 @@ const navItems = [
     isActive: isArchiveActive,
   },
 ]
-
-const isArabic = currentLang === 'ar'
 ---
 
 <!-- Mobile Navbar -->
 <nav id="mobile-navbar" class="mobile-navbar" role="navigation" aria-label="Mobile navigation">
-  <div class="mobile-nav-content">
+  <div id="mobile-nav-content" class="mobile-nav-content">
+    <!-- Elements will be dynamically arranged by JavaScript based on current language -->
     
-    {isArabic ? (
-      <!-- Arabic Layout: lang-switcher | theme-toggle | spacer | title | menu -->
-      <>
-        <!-- Language Switcher -->
-        {showLanguageSwitcher && (
-          <a 
-            id="mobile-language-switcher" 
-            href={nextUrl} 
-            class="mobile-btn" 
-            aria-label="Switch language"
-            role="button"
-          >
-            <LanguageSwitcherIcon class="mobile-icon" fill="currentColor" />
-          </a>
-        )}
-        
-        <!-- Theme Toggle -->
-        <button 
-          id="mobile-theme-toggle" 
-          class="mobile-btn" 
-          aria-label="Toggle theme"
-          type="button"
-        >
-          <ThemeToggleIcon class="mobile-icon" fill="currentColor" />
-        </button>
-        
-        <!-- Spacer -->
-        <div class="mobile-spacer"></div>
-        
-        <!-- Site Title -->
-        <a href={getLocalizedPath('/')} class="mobile-title-link arabic-title">
-          {siteTitle}
-        </a>
-        
-        <!-- Hamburger Menu -->
-        <button 
-          id="mobile-menu-toggle" 
-          class="mobile-hamburger" 
-          aria-label="Toggle menu" 
-          aria-expanded="false"
-          type="button"
-        >
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-        </button>
-      </>
-    ) : (
-      <!-- English Layout: menu | title | spacer | theme-toggle | lang-switcher -->
-      <>
-        <!-- Hamburger Menu -->
-        <button 
-          id="mobile-menu-toggle" 
-          class="mobile-hamburger" 
-          aria-label="Toggle menu" 
-          aria-expanded="false"
-          type="button"
-        >
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-        </button>
-        
-        <!-- Site Title (directly next to menu) -->
-        <a href={getLocalizedPath('/')} class="mobile-title-link">
-          {siteTitle}
-        </a>
-        
-        <!-- Spacer to push buttons to far right -->
-        <div class="mobile-spacer"></div>
-        
-        <!-- Theme Toggle -->
-        <button 
-          id="mobile-theme-toggle" 
-          class="mobile-btn" 
-          aria-label="Toggle theme"
-          type="button"
-        >
-          <ThemeToggleIcon class="mobile-icon" fill="currentColor" />
-        </button>
-        
-        <!-- Language Switcher -->
-        {showLanguageSwitcher && (
-          <a 
-            id="mobile-language-switcher" 
-            href={nextUrl} 
-            class="mobile-btn" 
-            aria-label="Switch language"
-            role="button"
-          >
-            <LanguageSwitcherIcon class="mobile-icon" fill="currentColor" />
-          </a>
-        )}
-      </>
+    <!-- Hamburger Menu -->
+    <button 
+      id="mobile-menu-toggle" 
+      class="mobile-hamburger" 
+      aria-label="Toggle menu" 
+      aria-expanded="false"
+      type="button"
+    >
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+    
+    <!-- Site Title -->
+    <a id="mobile-title-link" href={getLocalizedPath('/')} class="mobile-title-link">
+      {siteTitle}
+    </a>
+    
+    <!-- Spacer -->
+    <div id="mobile-spacer" class="mobile-spacer"></div>
+    
+    <!-- Theme Toggle -->
+    <button 
+      id="mobile-theme-toggle" 
+      class="mobile-btn" 
+      aria-label="Toggle theme"
+      type="button"
+    >
+      <ThemeToggleIcon class="mobile-icon" fill="currentColor" />
+    </button>
+    
+    <!-- Language Switcher -->
+    {showLanguageSwitcher && (
+      <a 
+        id="mobile-language-switcher" 
+        href={nextUrl} 
+        class="mobile-btn" 
+        aria-label="Switch language"
+        role="button"
+      >
+        <LanguageSwitcherIcon class="mobile-icon" fill="currentColor" />
+      </a>
     )}
   </div>
 
@@ -166,7 +113,7 @@ const isArabic = currentLang === 'ar'
         <li role="none">
           <a 
             href={getLocalizedPath(item.href)} 
-            class={`mobile-menu-item ${item.isActive ? 'active' : ''} ${isArabic ? 'rtl' : ''}`}
+            class={`mobile-menu-item ${item.isActive ? 'active' : ''}`}
             role="menuitem"
           >
             {item.label}
@@ -258,7 +205,7 @@ const isArabic = currentLang === 'ar'
   }
 
   .mobile-title-link {
-    font-family: 'EarlySummer-VF', 'STIX', 'Times New Roman', serif;
+    font-family: 'EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif;
     font-weight: 700;
     font-size: 20px;
     color: #a0341a;
@@ -268,6 +215,7 @@ const isArabic = currentLang === 'ar'
     flex-shrink: 0;
     margin-left: 8px;
     -webkit-tap-highlight-color: transparent;
+    font-variation-settings: "wght" 700;
   }
 
   html.dark .mobile-title-link {
@@ -395,7 +343,7 @@ const isArabic = currentLang === 'ar'
     padding: 12px 16px;
     color: rgba(0, 0, 0, 0.7);
     text-decoration: none;
-    font-family: 'EarlySummer-VF', 'STIX', 'Times New Roman', serif;
+    font-family: 'EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif;
     font-weight: 600;
     font-size: 16px;
     border-radius: 6px;
@@ -431,9 +379,10 @@ const isArabic = currentLang === 'ar'
     background-color: rgba(220, 38, 38, 0.1);
   }
 
+  /* RTL styling applied dynamically by JavaScript */
   .mobile-menu-item.rtl {
-    direction: rtl;
-    text-align: right;
+    direction: rtl !important;
+    text-align: right !important;
     font-family: 'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif !important;
   }
 
@@ -458,27 +407,109 @@ const isArabic = currentLang === 'ar'
 </style>
 
 <script is:inline>
-// Mobile navbar functionality - Fixed TypeScript version
+// Mobile navbar functionality - With dynamic language arrangement
 (function() {
   let navbar = null;
+  let navContent = null;
   let menuToggle = null;
   let themeToggle = null;
+  let languageSwitcher = null;
+  let titleLink = null;
+  let spacer = null;
   let isMenuOpen = false;
 
   function initMobileNavbar() {
     // Get elements
     navbar = document.getElementById('mobile-navbar');
+    navContent = document.getElementById('mobile-nav-content');
     menuToggle = document.getElementById('mobile-menu-toggle');
     themeToggle = document.getElementById('mobile-theme-toggle');
+    languageSwitcher = document.getElementById('mobile-language-switcher');
+    titleLink = document.getElementById('mobile-title-link');
+    spacer = document.getElementById('mobile-spacer');
     
-    if (!navbar || !menuToggle || !themeToggle) {
+    if (!navbar || !navContent || !menuToggle || !themeToggle || !titleLink) {
       console.log('Mobile navbar elements not found, retrying...');
       setTimeout(initMobileNavbar, 100);
       return;
     }
 
+    arrangeNavbarElements();
     setupEventListeners();
     console.log('Mobile navbar initialized');
+  }
+
+  function getCurrentLanguage() {
+    // Get language from HTML lang attribute or URL
+    const htmlLang = document.documentElement.lang;
+    if (htmlLang && htmlLang.includes('ar')) {
+      return 'ar';
+    }
+    
+    // Fallback: check URL path
+    const path = window.location.pathname;
+    if (path.includes('/ar/') || path.startsWith('/ar')) {
+      return 'ar';
+    }
+    
+    return 'en';
+  }
+
+  function arrangeNavbarElements() {
+    const currentLang = getCurrentLanguage();
+    const isArabic = currentLang === 'ar';
+    
+    // Clear current arrangement
+    navContent.innerHTML = '';
+    
+    // Set title font and direction based on language
+    if (isArabic) {
+      titleLink.className = 'mobile-title-link arabic-title';
+      titleLink.style.fontFamily = "'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif";
+      titleLink.style.direction = 'rtl';
+      titleLink.style.marginLeft = '0';
+      titleLink.style.marginRight = '8px';
+    } else {
+      titleLink.className = 'mobile-title-link';
+      titleLink.style.fontFamily = "'EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif";
+      titleLink.style.direction = 'ltr';
+      titleLink.style.marginLeft = '8px';
+      titleLink.style.marginRight = '0';
+    }
+    
+    // Update menu items styling based on language
+    const menuItems = document.querySelectorAll('.mobile-menu-item');
+    menuItems.forEach(function(item) {
+      if (isArabic) {
+        item.classList.add('rtl');
+        item.style.direction = 'rtl';
+        item.style.textAlign = 'right';
+        item.style.fontFamily = "'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif";
+      } else {
+        item.classList.remove('rtl');
+        item.style.direction = 'ltr';
+        item.style.textAlign = 'left';
+        item.style.fontFamily = "'EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif";
+      }
+    });
+    
+    if (isArabic) {
+      // Arabic Layout: lang-switcher | theme-toggle | spacer | title | menu
+      if (languageSwitcher) navContent.appendChild(languageSwitcher);
+      navContent.appendChild(themeToggle);
+      navContent.appendChild(spacer);
+      navContent.appendChild(titleLink);
+      navContent.appendChild(menuToggle);
+    } else {
+      // English Layout: menu | title | spacer | theme-toggle | lang-switcher
+      navContent.appendChild(menuToggle);
+      navContent.appendChild(titleLink);
+      navContent.appendChild(spacer);
+      navContent.appendChild(themeToggle);
+      if (languageSwitcher) navContent.appendChild(languageSwitcher);
+    }
+    
+    console.log('Navbar arranged for language:', currentLang);
   }
 
   function setupEventListeners() {
@@ -495,6 +526,16 @@ const isArabic = currentLang === 'ar'
       e.stopPropagation();
       toggleTheme();
     });
+
+    // Language switcher - rearrange after navigation
+    if (languageSwitcher) {
+      languageSwitcher.addEventListener('click', function() {
+        // Delay to allow page navigation to complete
+        setTimeout(function() {
+          arrangeNavbarElements();
+        }, 100);
+      });
+    }
 
     // Close menu on outside click
     document.addEventListener('click', function(e) {
@@ -566,7 +607,23 @@ const isArabic = currentLang === 'ar'
     initMobileNavbar();
   }
 
-  // Re-initialize on Astro page transitions
-  document.addEventListener('astro:page-load', initMobileNavbar);
+  // Re-initialize on Astro page transitions and language changes
+  document.addEventListener('astro:page-load', function() {
+    setTimeout(initMobileNavbar, 100);
+  });
+  
+  // Listen for popstate (back/forward navigation)
+  window.addEventListener('popstate', function() {
+    setTimeout(arrangeNavbarElements, 100);
+  });
+  
+  // Observe URL changes for language switching
+  let currentUrl = window.location.href;
+  setInterval(function() {
+    if (window.location.href !== currentUrl) {
+      currentUrl = window.location.href;
+      setTimeout(arrangeNavbarElements, 100);
+    }
+  }, 500);
 })();
 </script>
