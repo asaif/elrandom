@@ -69,29 +69,9 @@
   text-align: right;
 }
 
-/* ====== BUTTON POSITIONING FOR RTL - CORRECTED ====== */
+/* ====== BUTTON POSITIONING FOR RTL - DESKTOP ONLY ====== */
 
-/* 9. Desktop: Keep buttons on the RIGHT side for Arabic */
-/* 10. Mobile: Move buttons to the LEFT side for Arabic */
-
-/* Mobile button positioning for Arabic */
-@media (max-width: 1023px) {
-  :lang(ar) div:has(> #language-switcher),
-  :lang(ar) div:has(> #theme-toggle-button) {
-    right: auto !important;
-    left: 7.25vw !important;
-    z-index: 9999 !important; /* Ensure buttons appear above title */
-  }
-  
-  /* Fallback selector for mobile */
-  :lang(ar) div[class*="absolute"][class*="gap-6"] {
-    right: auto !important;
-    left: 7.25vw !important;
-    z-index: 9999 !important;
-  }
-}
-
-/* Desktop: Keep original positioning (right side) for Arabic */
+/* Desktop: Keep buttons on the RIGHT side for Arabic */
 @media (min-width: 1024px) {
   :lang(ar) div:has(> #language-switcher),
   :lang(ar) div:has(> #theme-toggle-button) {
@@ -106,34 +86,54 @@
 
 /* ====== SPACING REDUCTION (ALL LANGUAGES) ====== */
 
-/* 10. Reduce Header Spacing */
-header:not(.post-header) {
-  margin-bottom: 1.5rem !important;
+/* 9. Reduce Header Spacing - Desktop only */
+@media (min-width: 1024px) {
+  header:not(.post-header) {
+    margin-bottom: 1.5rem !important;
+  }
 }
 
-/* 11. Reduce Navigation Spacing */
-nav[aria-label="Site Navigation"] {
-  margin-bottom: 2rem !important;
+/* 10. Reduce Navigation Spacing - Desktop only */
+@media (min-width: 1024px) {
+  nav[aria-label="Site Navigation"] {
+    margin-bottom: 2rem !important;
+  }
 }
 
-/* ====== MOBILE RTL SUPPORT (KEEP AS IS) ====== */
+/* ====== MOBILE SPECIFIC STYLES ====== */
 
-/* 12. Mobile RTL Layout - Don't move buttons */
+/* 11. Mobile body padding adjustment */
 @media (max-width: 1023px) {
-  :lang(ar) header,
-  :lang(ar) nav,
+  body {
+    padding-top: 56px !important;
+    padding-left: min(7.25vw, 3.731rem) !important;
+    padding-right: min(7.25vw, 3.731rem) !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  /* Hide desktop elements on mobile */
+  .lg\:block {
+    display: block !important;
+  }
+  
+  @media (max-width: 1023px) {
+    .lg\:block {
+      display: none !important;
+    }
+  }
+}
+
+/* ====== RTL SUPPORT ====== */
+
+/* 12. Mobile RTL Layout */
+@media (max-width: 1023px) {
   :lang(ar) main,
   :lang(ar) footer {
     direction: rtl;
     text-align: right;
   }
   
-  :lang(ar) nav ul {
-    padding-right: 0;
-    padding-left: 0;
-  }
-  
-  /* Remove mobile button positioning - let buttons stay on right */
+  /* Mobile navbar RTL is handled in the component itself */
 }
 
 /* ====== TEXT FLOW IMPROVEMENTS ====== */
@@ -166,4 +166,20 @@ nav[aria-label="Site Navigation"] {
 /* 15. Arabic Link Styling */
 :lang(ar) a {
   direction: rtl;
+}
+
+/* ====== MOBILE NAVBAR SPECIFIC OVERRIDES ====== */
+
+/* 16. Ensure mobile navbar is always LTR in structure but content can be RTL */
+@media (max-width: 1023px) {
+  #mobile-navbar {
+    direction: ltr; /* Keep structure LTR */
+  }
+  
+  /* But allow Arabic text within to be RTL */
+  :lang(ar) #mobile-navbar .arabic-title,
+  :lang(ar) #mobile-navbar .rtl {
+    direction: rtl !important;
+    text-align: right !important;
+  }
 }

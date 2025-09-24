@@ -14,6 +14,9 @@ const volumeSettings: Record<SoundType, number> = {
 const clickTargets = [
   '#language-switcher',
   '#theme-toggle-button',
+  '#mobile-language-switcher',
+  '#mobile-theme-toggle',
+  '#mobile-menu-toggle',
 ] as const
 
 const typingTargets = [
@@ -85,88 +88,72 @@ class SoundEffectManager {
   // Initialize audio context and preload sound files (executes only once)
   private async initialize(): Promise<void> {
     return this.initPromise ??= (async () => {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext
-      this.audioContext = new AudioContextClass()
-      await this.preloadAllSounds()
+      try {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)()
+        await this.preloadAllSounds()
+      }
+      catch (error) {
+        console.warn('[Sound] Failed to initialize sound effects:', error)
+      }
     })()
   }
 
-  // Play a random sound of the specified type
-  public async playSound(soundType: SoundType): Promise<void> {
-    try {
+  // Play a random sound variant for the given type
+  public async playSound(type: SoundType): Promise<void> {
+    if (!this.audioContext) {
       await this.initialize()
+    }
 
-      if (!this.audioContext) {
-        return
-      }
+    if (!this.audioContext || this.audioBuffers[type].length === 0) {
+      return
+    }
 
-      // Resume audio context if suspended
-      if (this.audioContext.state === 'suspended') {
-        await this.audioContext.resume()
-      }
+    try {
+      const randomIndex = Math.floor(Math.random() * this.audioBuffers[type].length)
+      const buffer = this.audioBuffers[type][randomIndex]
 
-      // Get matching sound buffers for the requested type
-      const buffers = this.audioBuffers[soundType]
-      if (buffers.length === 0) {
-        return
-      }
-
-      // Select random sound from available buffers
       const source = this.audioContext.createBufferSource()
-      source.buffer = buffers[Math.floor(Math.random() * buffers.length)]
-
-      // Create and configure audio nodes
       const gainNode = this.audioContext.createGain()
-      gainNode.gain.value = volumeSettings[soundType]
 
-      // Connect nodes and play sound
-      source.connect(gainNode).connect(this.audioContext.destination)
-      source.start(0)
+      source.buffer = buffer
+      gainNode.gain.value = volumeSettings[type]
+
+      source.connect(gainNode)
+      gainNode.connect(this.audioContext.destination)
+
+      source.start()
     }
     catch (error) {
-      console.warn('Sound playback failed:', error)
+      console.warn('[Sound] Failed to play sound:', error)
     }
   }
 }
 
+// Global sound manager instance
 const soundManager = new SoundEffectManager()
 
-// Handle click events on interactive elements
-function handleGlobalClick(event: MouseEvent) {
-  if (isMobileDevice()) {
-    return
+// Handle click sound effects (now includes mobile buttons)
+function handleClickSound(e: Event): void {
+  // Play sounds on all devices, not just desktop
+  const target = e.target as Element
+  if (target?.closest(clickSelector)) {
+    soundManager.playSound(soundTypes.click)
   }
-
-  const target = event.target as Element | null
-  if (!target?.closest(clickSelector)) {
-    return
-  }
-
-  soundManager.playSound(soundTypes.click)
 }
 
-// Handle keyboard events for typing sounds
-function handleGlobalKeydown(event: KeyboardEvent) {
-  if (isMobileDevice()) {
+// Handle typing sound effects
+function handleTypingSound(e: KeyboardEvent): void {
+  if (isMobileDevice() || ignoredKeys.has(e.key)) {
     return
   }
 
-  if (event.ctrlKey || event.altKey || event.metaKey) {
-    return
+  const target = e.target as Element
+  if (target?.matches(typingSelector)) {
+    soundManager.playSound(soundTypes.typing)
   }
-
-  if (ignoredKeys.has(event.key)) {
-    return
-  }
-
-  const target = event.target as Element | null
-  if (!target?.closest(typingSelector)) {
-    return
-  }
-
-  soundManager.playSound(soundTypes.typing)
 }
 
-document.addEventListener('click', handleGlobalClick, { passive: true })
-document.addEventListener('keydown', handleGlobalKeydown, { passive: true })
+// Bind event listeners
+document.addEventListener('click', handleClickSound, { passive: true })
+document.addEventListener('keydown', handleTypingSound, { passive: true })
 </script>
