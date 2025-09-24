@@ -2,7 +2,7 @@
 import { getNavigationItemsWithClasses } from '@/utils/navigation'
 import { getPageInfo } from '@/utils/page'
 
-const { isPost, getLocalizedPath } = getPageInfo(Astro.url.pathname)
+const { getLocalizedPath } = getPageInfo(Astro.url.pathname)
 const navItems = getNavigationItemsWithClasses(Astro.url.pathname)
 ---
 

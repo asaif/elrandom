@@ -67,6 +67,6 @@ export function getNavigationItemsWithClasses(pathname: string): NavItemWithClas
  */
 function getNavItemClass(isActive: boolean): string {
   return isActive
-    ? 'highlight-static c-primary font-bold after:bottom-0.7em'
-    : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:(c-primary font-bold)'
+    ? 'highlight-static c-primary font-bold after:bottom-0.15em'
+    : 'highlight-hover transition-[colors,font-weight] after:bottom-0.15em hover:(c-primary font-bold)'
 }

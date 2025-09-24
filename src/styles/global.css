@@ -14,22 +14,28 @@ body::selection {
   --at-apply: 'bg-highlight';
 }
 
-/* Highlight Hover Animation >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+/* Highlight Hover Animation - PERFECT POSITIONING >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 .highlight-static,
 .highlight-hover {
   --at-apply: 'relative inline-block';
 }
 .highlight-static::after,
 .highlight-hover::after {
-  --at-apply: 'absolute left-0 z--1 h-0.5em w-full bg-highlight';
+  --at-apply: 'absolute left-0 w-full bg-highlight';
   content: '';
+  height: 0.3em;
+  top: 50%; /* Position at middle of text */
+  transform: translateY(-50%); /* Center the highlight vertically */
+  z-index: -1;
 }
 .highlight-static::after,
 .highlight-hover:hover::after {
   --at-apply: 'origin-bottom-left scale-x-100';
+  transform: translateY(-50%) scaleX(1);
 }
 .highlight-hover::after {
-  --at-apply: 'origin-bottom-right scale-x-0 transition-transform ease-out lg:duration-300';
+  --at-apply: 'origin-bottom-right transition-transform ease-out lg:duration-300';
+  transform: translateY(-50%) scaleX(0);
 }
 
 /* Heading Anchor Link >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
