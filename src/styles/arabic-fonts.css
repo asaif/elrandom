@@ -52,7 +52,7 @@
 
 /* 7. Mobile Menu Items - Default English Font */
 .mobile-menu-item {
-  font-family: 'EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif !important;
+  font-family: 'STIX-Italic','EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif !important;
   font-weight: 600 !important;
 }
 
