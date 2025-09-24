@@ -14,7 +14,7 @@ export const themeConfig: ThemeConfig = {
     // author name
     author: 'asaif',
     // site url
-    url: 'https://asaif.zone',
+    url: 'https://saif.zone',
     // base path
     // root directory for all pages and assets
     base: '/', // e.g., '/blog', '/docs'
