@@ -37,7 +37,7 @@
 
 /* 5. Mobile Navbar Site Title - Default English Font */
 .mobile-title-link {
-  font-family: 'EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif !important;
+  font-family: 'Snell-Black','EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif !important;
   font-weight: 700 !important;
   font-variation-settings: "wght" 700 !important;
 }
