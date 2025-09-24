@@ -1,0 +1,166 @@
+/* Mobile Navigation Styles */
+
+/* ====== MOBILE NAVBAR BASE STYLES ====== */
+
+#mobile-navbar {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure mobile navbar appears above other elements */
+#mobile-navbar {
+  z-index: 1000;
+}
+
+/* ====== MOBILE MENU ANIMATIONS ====== */
+
+#mobile-menu-overlay {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth menu transitions */
+.mobile-menu-line {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ====== RTL SUPPORT FOR MOBILE NAVBAR ====== */
+
+/* Arabic RTL Layout */
+:lang(ar) #mobile-navbar .order-1 {
+  order: 3;
+}
+
+:lang(ar) #mobile-navbar .order-2 {
+  order: 2;
+}
+
+:lang(ar) #mobile-navbar .order-3 {
+  order: 1;
+}
+
+/* Arabic menu items alignment */
+:lang(ar) #mobile-menu-overlay ul li a {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* ====== MOBILE-SPECIFIC ADJUSTMENTS ====== */
+
+@media (max-width: 1023px) {
+  /* Adjust body padding for fixed mobile navbar */
+  body {
+    padding-top: 3.5rem !important;
+  }
+
+  /* Hide desktop elements on mobile */
+  .lg\:hidden {
+    display: none !important;
+  }
+
+  /* Ensure proper spacing below mobile navbar */
+  .main-content {
+    margin-top: 1rem;
+  }
+
+  /* Mobile navbar site title styling */
+  #mobile-navbar .font-title {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* Arabic mobile navbar site title */
+  :lang(ar) #mobile-navbar .font-title {
+    font-family: 'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif !important;
+    direction: rtl;
+  }
+
+  /* Mobile menu overlay z-index */
+  #mobile-menu-overlay {
+    z-index: 999;
+  }
+
+  /* Prevent body scroll when menu is open */
+  body.mobile-menu-open {
+    overflow: hidden;
+  }
+}
+
+/* ====== TOUCH TARGETS AND ACCESSIBILITY ====== */
+
+/* Ensure touch targets are at least 44px */
+#mobile-navbar button,
+#mobile-navbar a {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Focus styles for accessibility */
+#mobile-navbar button:focus,
+#mobile-navbar a:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Active states for better touch feedback */
+#mobile-navbar button:active,
+#mobile-navbar a:active {
+  transform: scale(0.95);
+}
+
+/* ====== RESPONSIVE BREAKPOINTS ====== */
+
+/* Hide mobile navbar on desktop */
+@media (min-width: 1024px) {
+  #mobile-navbar {
+    display: none !important;
+  }
+  
+  body {
+    padding-top: 0 !important;
+  }
+}
+
+/* ====== DARK MODE SUPPORT ====== */
+
+html.dark #mobile-navbar {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+}
+
+html.dark #mobile-menu-overlay {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1);
+}
+
+/* ====== HIGH CONTRAST MODE ====== */
+
+@media (prefers-contrast: high) {
+  #mobile-navbar {
+    border-bottom-width: 2px;
+  }
+  
+  #mobile-menu-overlay {
+    border-bottom-width: 2px;
+  }
+  
+  .mobile-menu-line {
+    height: 3px;
+  }
+}
+
+/* ====== REDUCED MOTION SUPPORT ====== */
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu-line,
+  #mobile-menu-overlay,
+  #mobile-navbar button,
+  #mobile-navbar a {
+    transition: none !important;
+    animation: none !important;
+  }
+}
