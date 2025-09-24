@@ -33,9 +33,40 @@
   font-family: 'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif !important;
 }
 
+/* ====== MOBILE NAVBAR FONTS ====== */
+
+/* 5. Mobile Navbar Site Title - Default English Font */
+.mobile-title-link {
+  font-family: 'EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif !important;
+  font-weight: 700 !important;
+  font-variation-settings: "wght" 700 !important;
+}
+
+/* 6. Arabic Mobile Navbar Site Title - Gulzar Font */
+:lang(ar) .mobile-title-link,
+:lang(ar) .arabic-title {
+  font-family: 'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* 7. Mobile Menu Items - Default English Font */
+.mobile-menu-item {
+  font-family: 'EarlySummer-VF', 'STIX Two Text', 'STIX', 'Times New Roman', serif !important;
+  font-weight: 600 !important;
+}
+
+/* 8. Arabic Mobile Menu Items - Gulzar Font */
+:lang(ar) .mobile-menu-item,
+:lang(ar) .mobile-menu-item.rtl {
+  font-family: 'Gulzar', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
 /* ====== RTL LAYOUT ====== */
 
-/* 5. Site Title RTL */
+/* 9. Site Title RTL */
 :lang(ar) header,
 :lang(ar) header h1,
 :lang(ar) header h2,
@@ -44,7 +75,7 @@
   text-align: right;
 }
 
-/* 6. Navigation RTL */
+/* 10. Navigation RTL */
 :lang(ar) nav,
 :lang(ar) nav ul,
 :lang(ar) nav li,
@@ -53,7 +84,7 @@
   text-align: right;
 }
 
-/* 7. Main Content RTL */
+/* 11. Main Content RTL */
 :lang(ar) .heti,
 :lang(ar) main,
 :lang(ar) article {
@@ -61,12 +92,52 @@
   text-align: right;
 }
 
-/* 8. Footer RTL */
+/* 12. Footer RTL */
 :lang(ar) footer,
 :lang(ar) footer p,
 :lang(ar) footer a {
   direction: rtl;
   text-align: right;
+}
+
+/* ====== MOBILE NAVBAR LAYOUT ARRANGEMENT ====== */
+
+/* 13. Default English Layout: menu | title | spacer | theme | lang */
+@media (max-width: 1023px) {
+  .mobile-nav-content {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    padding: 0 16px;
+    gap: 12px;
+  }
+  
+  /* Default order for English */
+  #mobile-menu-toggle { order: 1; }
+  .mobile-title-link { order: 2; margin-left: 8px; margin-right: 0; }
+  .mobile-spacer { order: 3; }
+  #mobile-theme-toggle { order: 4; }
+  #mobile-language-switcher { order: 5; }
+}
+
+/* 14. Arabic Layout: lang | theme | spacer | title | menu */
+@media (max-width: 1023px) {
+  :lang(ar) .mobile-nav-content {
+    direction: ltr; /* Keep container LTR for proper flex ordering */
+  }
+  
+  /* Arabic arrangement */
+  :lang(ar) #mobile-language-switcher { order: 1; }
+  :lang(ar) #mobile-theme-toggle { order: 2; }
+  :lang(ar) .mobile-spacer { order: 3; }
+  :lang(ar) .mobile-title-link { 
+    order: 4; 
+    margin-left: 0; 
+    margin-right: 8px;
+    direction: rtl;
+    text-align: right;
+  }
+  :lang(ar) #mobile-menu-toggle { order: 5; }
 }
 
 /* ====== BUTTON POSITIONING FOR RTL - DESKTOP ONLY ====== */
@@ -86,14 +157,14 @@
 
 /* ====== SPACING REDUCTION (ALL LANGUAGES) ====== */
 
-/* 9. Reduce Header Spacing - Desktop only */
+/* 15. Reduce Header Spacing - Desktop only */
 @media (min-width: 1024px) {
   header:not(.post-header) {
     margin-bottom: 1.5rem !important;
   }
 }
 
-/* 10. Reduce Navigation Spacing - Desktop only */
+/* 16. Reduce Navigation Spacing - Desktop only */
 @media (min-width: 1024px) {
   nav[aria-label="Site Navigation"] {
     margin-bottom: 2rem !important;
@@ -102,7 +173,7 @@
 
 /* ====== MOBILE SPECIFIC STYLES ====== */
 
-/* 11. Mobile body padding adjustment */
+/* 17. Mobile body padding adjustment */
 @media (max-width: 1023px) {
   body {
     padding-top: 56px !important;
@@ -125,7 +196,7 @@
 
 /* ====== RTL SUPPORT ====== */
 
-/* 12. Mobile RTL Layout */
+/* 18. Mobile RTL Layout */
 @media (max-width: 1023px) {
   :lang(ar) main,
   :lang(ar) footer {
@@ -133,12 +204,22 @@
     text-align: right;
   }
   
-  /* Mobile navbar RTL is handled in the component itself */
+  /* Mobile navbar container stays LTR for flex ordering */
+  :lang(ar) #mobile-navbar {
+    direction: ltr;
+  }
+  
+  /* But individual Arabic text elements are RTL */
+  :lang(ar) .mobile-title-link,
+  :lang(ar) .mobile-menu-item {
+    direction: rtl !important;
+    text-align: right !important;
+  }
 }
 
 /* ====== TEXT FLOW IMPROVEMENTS ====== */
 
-/* 13. Arabic Text Direction for All Elements */
+/* 19. Arabic Text Direction for All Elements */
 :lang(ar) h1,
 :lang(ar) h2, 
 :lang(ar) h3,
@@ -154,7 +235,7 @@
   text-align: right;
 }
 
-/* 14. Arabic List Styling */
+/* 20. Arabic List Styling */
 :lang(ar) ul,
 :lang(ar) ol {
   direction: rtl;
@@ -163,23 +244,52 @@
   padding-left: 0;
 }
 
-/* 15. Arabic Link Styling */
+/* 21. Arabic Link Styling */
 :lang(ar) a {
   direction: rtl;
 }
 
-/* ====== MOBILE NAVBAR SPECIFIC OVERRIDES ====== */
+/* ====== MOBILE NAVBAR RESPONSIVE FINE-TUNING ====== */
 
-/* 16. Ensure mobile navbar is always LTR in structure but content can be RTL */
+/* 22. Ensure proper touch targets on mobile */
 @media (max-width: 1023px) {
-  #mobile-navbar {
-    direction: ltr; /* Keep structure LTR */
+  .mobile-hamburger,
+  .mobile-btn {
+    min-width: 44px;
+    min-height: 44px;
+    flex-shrink: 0;
   }
   
-  /* But allow Arabic text within to be RTL */
-  :lang(ar) #mobile-navbar .arabic-title,
-  :lang(ar) #mobile-navbar .rtl {
-    direction: rtl !important;
-    text-align: right !important;
+  .mobile-title-link {
+    flex-shrink: 0;
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .mobile-spacer {
+    flex: 1;
+    min-width: 12px;
+  }
+}
+
+/* ====== FONT LOADING OPTIMIZATION ====== */
+
+/* 23. Ensure fonts load properly for mobile navbar */
+@media (max-width: 1023px) {
+  .mobile-title-link {
+    font-display: swap;
+    font-feature-settings: "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  :lang(ar) .mobile-title-link,
+  :lang(ar) .mobile-menu-item {
+    font-display: swap;
+    font-feature-settings: "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
