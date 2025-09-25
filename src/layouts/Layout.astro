@@ -12,6 +12,9 @@ import SoundEffect from '@/components/Widgets/SoundEffect.astro'
 import themeConfig from '@/config'
 import Head from '@/layouts/Head.astro'
 import { getPageInfo } from '@/utils/page'
+// Import the new design system first
+import '@/styles/components/design-system.css'
+// Keep existing styles
 import '@/styles/comment.css'
 import '@/styles/extension.css'
 import '@/styles/font.css'
@@ -32,8 +35,8 @@ const { postTitle, postDescription, postSlug, supportedLangs = [] } = Astro.prop
 const { isPost, currentLang } = getPageInfo(Astro.url.pathname)
 const fontStyle = themeConfig.global.fontStyle === 'serif' ? 'font-serif' : 'font-sans'
 const MarginBottom = isPost && themeConfig.comment?.enabled
-  ? 'mb-10' // Post page with comment
-  : 'mb-12' // Other pages without comment
+  ? 'spacing-lg' // Post page with comment - using new spacing system
+  : 'spacing-xl' // Other pages without comment
 ---
 
 <html
@@ -53,8 +56,8 @@ const MarginBottom = isPost && themeConfig.comment?.enabled
       p="x-[min(7.25vw,3.731rem)] y-10"
       lg="mx-[max(5.75rem,calc(50vw-34.25rem))] my-20 max-w-[min(calc(75vw-16rem),44rem)] min-h-full p-0"
     >
-      <!-- Hide Header on mobile (< 1024px) -->
-      <div class="hidden lg:block">
+      <!-- Hide Header on mobile -->
+      <div class="desktop-only">
         <Header />
       </div>
       <Navbar />
@@ -66,8 +69,8 @@ const MarginBottom = isPost && themeConfig.comment?.enabled
       </main>
       <Footer />
     </div>
-    <!-- Hide Button component on mobile (< 1024px) -->
-    <div class="hidden lg:block">
+    <!-- Hide Button component on mobile -->
+    <div class="desktop-only">
       <Button supportedLangs={supportedLangs} />
     </div>
     <SoundEffect />

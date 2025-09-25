@@ -10,8 +10,8 @@ const navItems = getNavigationItemsWithClasses(Astro.url.pathname)
 <nav
   aria-label="Site Navigation"
   class:list={[
-    'hidden lg:block', // Always hidden on mobile, visible on desktop
-    'mb-10.5 text-3.6 font-semibold leading-2.45em font-navbar',
+    'desktop-only', // Using new responsive component
+    'spacing-lg text-3.6 font-semibold leading-2.45em font-navbar',
     'lg:(uno-desktop-column text-4 bottom-[min(9.04rem+3.85vw,12.5rem)]) cjk:tracking-0.02em',
   ]}
 >

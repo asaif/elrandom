@@ -17,16 +17,16 @@ const SubtitleTag = isPost ? 'div' : 'h2'
 <header
   class:list={[
     isPost
-    ? 'mb-10.8'
-    : 'mb-10.5',
+    ? 'spacing-lg'
+    : 'spacing-lg',
     'lg:(uno-desktop-column top-20) cjk:tracking-0.02em',
   ]}
 >
   <TitleTag
     class:list={[
       isPost
-        ? `mb-2.8 mt-3 text-5.375 c-secondary lg:(mb-1.8 mt-0 text-9 c-primary)`
-        : `mb-1.8 w-75% text-8 c-primary lg:(w-full text-9)`,
+        ? `mb-2.8 mt-3 text-5.375 secondary-text lg:(mb-1.8 mt-0 text-9 primary-text)`
+        : `mb-1.8 w-75% text-8 primary-text lg:(w-full text-9)`,
       'font-bold font-title',
     ]}
   >
@@ -51,7 +51,7 @@ const SubtitleTag = isPost ? 'div' : 'h2'
         isPost
           ? `op-0 lg:op-100`
           : 'w-75% lg:w-full',
-        'text-3.5 c-secondary font-navbar lg:text-4',
+        'text-3.5 secondary-text font-navbar lg:text-4',
       ]}
       aria-hidden={isPost}
     >
