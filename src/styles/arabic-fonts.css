@@ -149,9 +149,11 @@
     /* Don't change desktop positioning - keep on right */
     z-index: 9999 !important; /* But ensure they're above other content */
   }
-  
+
   :lang(ar) div[class*="lg:fixed"][class*="gap-6"] {
     z-index: 9999 !important;
+    /* Shift icons left to align under Arabic text */
+    transform: translateX(-20px) !important;
   }
 }
 
