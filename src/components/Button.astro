@@ -36,6 +36,7 @@ const nextUrl = supportedLangs.length > 0
   'lg:(fixed bottom-[min(10.27rem+1.92vw,12rem)] right-[max(5rem,calc(50vw-35rem))] top-auto w-14rem)',
 ]}
 >
+  <!-- Language Switcher (conditional order based on language) -->
   {currentLang === 'ar' ? (
     <>
       <!-- Arabic: Theme first, then Lang -->
@@ -44,8 +45,8 @@ const nextUrl = supportedLangs.length > 0
         class="aspect-square w-4 c-secondary active:scale-90 hover:c-primary"
         aria-label="Switch light/dark theme"
       >
-        <ThemeMoonIcon id="desktop-theme-icon-moon" aria-hidden="true" fill="currentColor" style="display: none;" />
-        <ThemeSunIcon id="desktop-theme-icon-sun" aria-hidden="true" fill="currentColor" style="display: none;" />
+        <ThemeMoonIcon class="theme-icon theme-icon-moon" aria-hidden="true" fill="currentColor" style="display: none;" />
+        <ThemeSunIcon class="theme-icon theme-icon-sun" aria-hidden="true" fill="currentColor" style="display: none;" />
       </button>
 
       {showLanguageSwitcher && (
@@ -84,8 +85,8 @@ const nextUrl = supportedLangs.length > 0
         class="aspect-square w-4 c-secondary active:scale-90 hover:c-primary"
         aria-label="Switch light/dark theme"
       >
-        <ThemeMoonIcon id="desktop-theme-icon-moon" aria-hidden="true" fill="currentColor" style="display: none;" />
-        <ThemeSunIcon id="desktop-theme-icon-sun" aria-hidden="true" fill="currentColor" style="display: none;" />
+        <ThemeMoonIcon class="theme-icon theme-icon-moon" aria-hidden="true" fill="currentColor" style="display: none;" />
+        <ThemeSunIcon class="theme-icon theme-icon-sun" aria-hidden="true" fill="currentColor" style="display: none;" />
       </button>
     </>
   )}
@@ -102,15 +103,18 @@ const nextUrl = supportedLangs.length > 0
 // Update theme icons
 function updateDesktopThemeIcon() {
   const isDark = document.documentElement.classList.contains('dark')
-  const moonIcon = document.getElementById('desktop-theme-icon-moon')
-  const sunIcon = document.getElementById('desktop-theme-icon-sun')
+  const moonIcons = document.querySelectorAll('.theme-icon-moon')
+  const sunIcons = document.querySelectorAll('.theme-icon-sun')
 
-  if (moonIcon && sunIcon) {
-    // Light theme: show moon icon
-    // Dark theme: show sun icon
-    moonIcon.style.display = isDark ? 'none' : 'block'
-    sunIcon.style.display = isDark ? 'block' : 'none'
-  }
+  // Update all moon icons
+  moonIcons.forEach(icon => {
+    icon.style.display = isDark ? 'none' : 'block'
+  })
+
+  // Update all sun icons
+  sunIcons.forEach(icon => {
+    icon.style.display = isDark ? 'block' : 'none'
+  })
 }
 
 // Apply theme changes
@@ -174,10 +178,21 @@ window.matchMedia('(prefers-color-scheme: dark)')
     applyTheme(isDark)
   })
 
-// Initialize theme icon on page load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', updateDesktopThemeIcon)
-} else {
-  updateDesktopThemeIcon()
+// Initialize theme icon on page load and after navigation
+function initializeThemeIcon() {
+  // Add a small delay to ensure DOM is ready
+  setTimeout(updateDesktopThemeIcon, 0)
+  // Also update after a short delay for slower renders
+  setTimeout(updateDesktopThemeIcon, 100)
 }
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeThemeIcon)
+} else {
+  initializeThemeIcon()
+}
+
+// Re-initialize on Astro page navigation
+document.addEventListener('astro:after-swap', initializeThemeIcon)
+document.addEventListener('astro:page-load', initializeThemeIcon)
 </script>
