@@ -1,6 +1,8 @@
 ---
-import LanguageSwitcherIcon from '@/assets/icons/language-switcher.svg'
-import ThemeToggleIcon from '@/assets/icons/theme-toggle.svg'
+import LangEnIcon from '@/assets/icons/lang-en.svg'
+import LangArIcon from '@/assets/icons/lang-ar.svg'
+import ThemeSunIcon from '@/assets/icons/theme-sun.svg'
+import ThemeMoonIcon from '@/assets/icons/theme-moon.svg'
 import { ui } from '@/i18n/ui'
 import { moreLocales, themeConfig } from '@/config'
 import { getNextGlobalLangPath, getNextSupportedLangPath } from '@/i18n/path'
@@ -83,25 +85,30 @@ const navItems = [
     <div id="mobile-spacer" class="mobile-spacer"></div>
     
     <!-- Theme Toggle -->
-    <button 
-      id="mobile-theme-toggle" 
-      class="mobile-btn" 
+    <button
+      id="mobile-theme-toggle"
+      class="mobile-btn"
       aria-label="Toggle theme"
       type="button"
     >
-      <ThemeToggleIcon class="mobile-icon" fill="currentColor" />
+      <ThemeMoonIcon id="theme-icon-moon" class="mobile-icon theme-icon" fill="currentColor" style="display: none;" />
+      <ThemeSunIcon id="theme-icon-sun" class="mobile-icon theme-icon" fill="currentColor" style="display: none;" />
     </button>
     
     <!-- Language Switcher -->
     {showLanguageSwitcher && (
-      <a 
-        id="mobile-language-switcher" 
-        href={nextUrl} 
-        class="mobile-btn" 
+      <a
+        id="mobile-language-switcher"
+        href={nextUrl}
+        class="mobile-btn"
         aria-label="Switch language"
         role="button"
       >
-        <LanguageSwitcherIcon class="mobile-icon" fill="currentColor" />
+        {currentLang === 'ar' ? (
+          <LangEnIcon class="mobile-icon" fill="currentColor" />
+        ) : (
+          <LangArIcon class="mobile-icon" fill="currentColor" />
+        )}
       </a>
     )}
   </div>
@@ -436,6 +443,7 @@ const navItems = [
 
     arrangeNavbarElements();
     setupEventListeners();
+    updateThemeIcon();
     console.log('Mobile navbar initialized');
   }
 
@@ -584,19 +592,33 @@ const navItems = [
     console.log('Menu closed');
   }
 
+  function updateThemeIcon() {
+    const isDark = document.documentElement.classList.contains('dark');
+    const moonIcon = document.getElementById('theme-icon-moon');
+    const sunIcon = document.getElementById('theme-icon-sun');
+
+    if (moonIcon && sunIcon) {
+      // Light theme: show moon icon
+      // Dark theme: show sun icon
+      moonIcon.style.display = isDark ? 'none' : 'block';
+      sunIcon.style.display = isDark ? 'block' : 'none';
+    }
+  }
+
   function toggleTheme() {
     const isDark = !document.documentElement.classList.contains('dark');
     document.documentElement.classList.toggle('dark', isDark);
-    
+
     const metaThemeColor = document.head.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
       const lightMode = 'oklch(96% 0.005 298)';
       const darkMode = 'oklch(15% 0.005 298)';
       metaThemeColor.setAttribute('content', isDark ? darkMode : lightMode);
     }
-    
+
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     document.dispatchEvent(new Event('theme-changed'));
+    updateThemeIcon();
     console.log('Theme toggled:', isDark ? 'dark' : 'light');
   }
 
