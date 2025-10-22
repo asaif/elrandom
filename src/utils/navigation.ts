@@ -17,14 +17,16 @@ export interface NavItemWithClass extends NavItem {
 export function getNavigationItems(pathname: string): NavItem[] {
   const { currentLang, isHome, isPost, isTag, isAbout } = getPageInfo(pathname)
   const currentUI = ui[currentLang as keyof typeof ui] ?? {}
-  
-  // Check if current page is archive
+
+  // Check if current page is archive or books
   const isArchive = pathname.includes('/archive')
-  
+  const isBooks = pathname.includes('/books')
+
   const isPostActive = isHome || isPost
   const isTagActive = isTag
   const isAboutActive = isAbout
   const isArchiveActive = isArchive
+  const isBooksActive = isBooks
 
   return [
     {
@@ -46,6 +48,11 @@ export function getNavigationItems(pathname: string): NavItem[] {
       href: '/archive/',
       label: currentUI.archive || 'Archive',
       isActive: isArchiveActive,
+    },
+    {
+      href: '/books/',
+      label: currentUI.books || 'Books',
+      isActive: isBooksActive,
     },
   ]
 }

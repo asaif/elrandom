@@ -168,6 +168,7 @@ export const getPostsByYear = memoize(_getPostsByYear)
  */
 async function _getPostsGroupByTags(lang?: string) {
   const posts = await getPosts(lang)
+  const books = await getCollection('books')
   const tagMap = new Map<string, Post[]>()
 
   posts.forEach((post: Post) => {
@@ -176,6 +177,17 @@ async function _getPostsGroupByTags(lang?: string) {
         tagMap.set(tag, [])
       }
       tagMap.get(tag)!.push(post)
+    })
+  })
+
+  // Add books to tag map
+  books.forEach((book) => {
+    book.data.tags?.forEach((tag: string) => {
+      if (!tagMap.has(tag)) {
+        tagMap.set(tag, [])
+      }
+      // Note: books are added to the same array, we'll handle display separately
+      tagMap.get(tag)!.push(book as any)
     })
   })
 
@@ -225,12 +237,16 @@ async function _getTagSupportedLangs(tag: string) {
     'posts',
     ({ data }) => !data.draft,
   )
+  const books = await getCollection('books')
   const { allLocales } = await import('@/config')
 
   return allLocales.filter(locale =>
     posts.some(post =>
       post.data.tags?.includes(tag)
       && (post.data.lang === locale || post.data.lang === ''),
+    ) || books.some(book =>
+      book.data.tags?.includes(tag)
+      && (book.data.language === locale || book.data.language === 'en'),
     ),
   )
 }

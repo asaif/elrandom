@@ -8,7 +8,9 @@ export const ui = {
     about: 'عنّي',
     toc: 'فهرس المحتويات',
     archive: 'المحفوظات',
-    archiveDescription: 'ترتيب سنوي للمقالات'
+    archiveDescription: 'ترتيب سنوي للمقالات',
+    books: 'كتبي',
+    booksDescription: 'كتب قرأتها، أقرأها حالياً، وأريد قراءتها'
 
   },
   'en': {
@@ -20,7 +22,9 @@ export const ui = {
     about: 'About',
     toc: 'Table of Contents',
     archive: 'Archive',
-    archiveDescription: 'A chronological collection of all posts'
+    archiveDescription: 'A chronological collection of all posts',
+    books: 'Books',
+    booksDescription: "Books I've read, currently reading, and want to read"
 
   },
 }

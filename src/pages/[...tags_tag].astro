@@ -37,9 +37,13 @@ export async function getStaticPaths() {
 }
 
 const { tag, lang } = Astro.props
-const posts = await getPostsByTag(tag, lang)
+const items = await getPostsByTag(tag, lang)
 const allTags = await getAllTags(lang)
 const supportedLangs = await getTagSupportedLangs(tag)
+
+// Separate posts and books
+const posts = items.filter(item => 'published' in item.data)
+const books = items.filter(item => 'dateAdded' in item.data)
 
 // Group posts by year
 const postsByYear = new Map<number, typeof posts>()
@@ -49,6 +53,16 @@ posts.forEach(post => {
     postsByYear.set(year, [])
   }
   postsByYear.get(year)!.push(post)
+})
+
+// Group books by year
+const booksByYear = new Map<number, typeof books>()
+books.forEach(book => {
+  const year = book.data.year
+  if (!booksByYear.has(year)) {
+    booksByYear.set(year, [])
+  }
+  booksByYear.get(year)!.push(book)
 })
 
 // Sort years in descending order and sort posts within each year
@@ -176,10 +190,51 @@ const yearsArray = sortedYears.map(year => [year, postsByYear.get(year)!] as con
         </div>
       ))}
     </div>
-  ) : (
+  ) : null}
+
+  <!-- Books Section -->
+  {books.length > 0 && (
+    <div class:list={[posts.length > 0 ? 'mt-16' : 'mt-10.5']}>
+      <h2 class="text-5 font-bold c-primary font-navbar mb-6">Books</h2>
+      {Array.from(booksByYear.keys()).sort((a, b) => b - a).map((year) => {
+        const yearBooks = booksByYear.get(year)!
+        return (
+          <div class="mb-8">
+            <h3 class="text-4.5 font-bold c-primary font-navbar mb-4">{year}</h3>
+            <div class="space-y-4">
+              {yearBooks.map((book) => (
+                <div class="flex items-start gap-4">
+                  <div class="flex-shrink-0 w-2 h-2 rounded-full bg-primary mt-2"></div>
+                  <div class="flex-1">
+                    <h4 class="text-3.8 c-primary font-navbar mb-1">{book.data.title}</h4>
+                    <p class="text-3.4 c-secondary/70 italic mb-1">{book.data.author}</p>
+                    {book.data.rating && (
+                      <div class="text-3.2 c-primary mb-2">{book.data.rating}</div>
+                    )}
+                    <div class="flex gap-1 flex-wrap">
+                      {book.data.tags?.map(bookTag => (
+                        <a
+                          href={`/${lang === defaultLocale ? '' : lang + '/'}tags/${bookTag}/`}
+                          class="inline-block px-2 py-0.4 text-2.2 leading-none c-secondary/50 bg-secondary/4 rounded-full hover:c-secondary/70 hover:bg-secondary/8 transition-all duration-200 ease-out text-decoration-none whitespace-nowrap"
+                        >
+                          {bookTag}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )}
+
+  {posts.length === 0 && books.length === 0 && (
     <!-- Empty State -->
     <div class="mt-10.5 text-center py-8">
-      <p class="text-3.6 c-secondary">No posts found with this tag.</p>
+      <p class="text-3.6 c-secondary">No content found with this tag.</p>
     </div>
   )}
 </Layout>
