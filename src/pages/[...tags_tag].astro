@@ -4,6 +4,7 @@ import { defaultLocale, moreLocales } from '@/config'
 import Layout from '@/layouts/Layout.astro'
 import { getAllTags, getPostsByTag, getTagSupportedLangs } from '@/utils/content'
 import { getPostPath, getTagPath } from '@/i18n/path'
+import type { CollectionEntry } from 'astro:content'
 
 export async function getStaticPaths() {
   type PathItem = {
@@ -41,9 +42,9 @@ const items = await getPostsByTag(tag, lang)
 const allTags = await getAllTags(lang)
 const supportedLangs = await getTagSupportedLangs(tag)
 
-// Separate posts and books
+// Separate posts and books with proper type guards
 const posts = items.filter(item => 'published' in item.data)
-const books = items.filter(item => 'dateAdded' in item.data)
+const books = items.filter(item => 'dateAdded' in item.data) as unknown as CollectionEntry<'books'>[]
 
 // Group posts by year
 const postsByYear = new Map<number, typeof posts>()
@@ -202,28 +203,36 @@ const yearsArray = sortedYears.map(year => [year, postsByYear.get(year)!] as con
           <div class="mb-8">
             <h3 class="text-4.5 font-bold c-primary font-navbar mb-4">{year}</h3>
             <div class="space-y-4">
-              {yearBooks.map((book) => (
-                <div class="flex items-start gap-4">
-                  <div class="flex-shrink-0 w-2 h-2 rounded-full bg-primary mt-2"></div>
-                  <div class="flex-1">
-                    <h4 class="text-3.8 c-primary font-navbar mb-1">{book.data.title}</h4>
-                    <p class="text-3.4 c-secondary/70 italic mb-1">{book.data.author}</p>
-                    {book.data.rating && (
-                      <div class="text-3.2 c-primary mb-2">{book.data.rating}</div>
-                    )}
-                    <div class="flex gap-1 flex-wrap">
-                      {book.data.tags?.map(bookTag => (
-                        <a
-                          href={`/${lang === defaultLocale ? '' : lang + '/'}tags/${bookTag}/`}
-                          class="inline-block px-2 py-0.4 text-2.2 leading-none c-secondary/50 bg-secondary/4 rounded-full hover:c-secondary/70 hover:bg-secondary/8 transition-all duration-200 ease-out text-decoration-none whitespace-nowrap"
-                        >
-                          {bookTag}
-                        </a>
-                      ))}
+              {yearBooks.map((book) => {
+                const bookId = book.id.replace('.md', '').replace('.mdx', '')
+                return (
+                  <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-2 h-2 rounded-full bg-primary mt-2"></div>
+                    <div class="flex-1">
+                      <a
+                        href={`/${lang === defaultLocale ? '' : lang + '/'}book/${bookId}/`}
+                        class="text-decoration-none"
+                      >
+                        <h4 class="text-3.8 c-primary font-navbar mb-1 hover:underline transition-all">{book.data.title}</h4>
+                      </a>
+                      <p class="text-3.4 c-secondary/70 italic mb-1">{book.data.author}</p>
+                      {book.data.rating && (
+                        <div class="text-3.2 c-primary mb-2">{book.data.rating}</div>
+                      )}
+                      <div class="flex gap-1 flex-wrap">
+                        {book.data.tags?.map(bookTag => (
+                          <a
+                            href={`/${lang === defaultLocale ? '' : lang + '/'}tags/${bookTag}/`}
+                            class="inline-block px-2 py-0.4 text-2.2 leading-none c-secondary/50 bg-secondary/4 rounded-full hover:c-secondary/70 hover:bg-secondary/8 transition-all duration-200 ease-out text-decoration-none whitespace-nowrap"
+                          >
+                            {bookTag}
+                          </a>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )

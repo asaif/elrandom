@@ -48,10 +48,17 @@ const books = defineCollection({
     currentPage: z.number().optional(),
     totalPages: z.number().optional(),
     quote: z.string().optional(),
+    quotes: z.array(z.string()).optional(),
     tags: z.array(z.string()),
     language: z.enum(['en', 'ar']).default('en'),
     isbn: z.string().optional(),
     year: z.number(),
+    coverImage: z.string().optional(),
+    genre: z.string().optional(),
+    timeline: z.array(z.object({
+      date: z.date(),
+      note: z.string(),
+    })).optional(),
   }),
 })
 
