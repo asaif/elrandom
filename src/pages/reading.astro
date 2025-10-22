@@ -1,0 +1,390 @@
+---
+import { getCollection, render } from 'astro:content'
+import Layout from '@/layouts/Layout.astro'
+
+// Get all books
+const allBooks = await getCollection('books')
+
+// Sort by date (most recent first)
+const sortedBooks = allBooks.sort((a, b) => {
+  const dateA = a.data.dateFinished || a.data.dateStarted || a.data.dateAdded
+  const dateB = b.data.dateFinished || b.data.dateStarted || b.data.dateAdded
+  return dateB.getTime() - dateA.getTime()
+})
+
+// Group by year
+const booksByYear = sortedBooks.reduce((acc, book) => {
+  const year = book.data.year
+  if (!acc[year]) {
+    acc[year] = []
+  }
+  acc[year].push(book)
+  return acc
+}, {} as Record<number, typeof sortedBooks>)
+
+// Calculate stats
+const stats = {
+  booksRead: allBooks.filter(b => b.data.status === 'finished').length,
+  currentlyReading: allBooks.filter(b => b.data.status === 'reading').length,
+  pagesThisYear: allBooks
+    .filter(b => b.data.year === new Date().getFullYear() && b.data.status === 'finished')
+    .reduce((sum, book) => sum + (book.data.totalPages || 0), 0),
+}
+
+// Format date helper
+function formatDate(date: Date): string {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const month = months[date.getMonth()]
+  const day = String(date.getDate()).padStart(2, '0')
+  const year = date.getFullYear()
+  return `${month} ${day}, ${year}`
+}
+
+// Calculate reading time helper
+function getReadingTime(startDate?: Date, endDate?: Date): string {
+  if (!startDate) return ''
+  const end = endDate || new Date()
+  const days = Math.floor((end.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+  if (days === 0) return 'Started today'
+  if (days === 1) return '1 day'
+  return `${days} days`
+}
+---
+
+<Layout>
+  <!-- Decorative Line -->
+  <div class="uno-decorative-line" />
+
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-6 font-bold c-primary mb-3 font-navbar lg:text-7">
+      Reading
+    </h1>
+    <p class="text-3.6 c-secondary leading-1.5em lg:text-4">
+      Books I've read, currently reading, and want to read
+    </p>
+
+    <!-- Reading Stats -->
+    <div class="mt-4 text-3.2 c-secondary">
+      <span class="font-medium">{stats.booksRead}</span> books read this year ·
+      <span class="font-medium">{stats.currentlyReading}</span> currently reading ·
+      <span class="font-medium">{stats.pagesThisYear.toLocaleString()}</span> pages
+    </div>
+  </div>
+
+  <div class="reading-page">
+
+    <!-- Books by Year -->
+    {Object.entries(booksByYear).sort(([a], [b]) => Number(b) - Number(a)).map(([year, books]) => (
+      <section class="year-section">
+        <h2 class="year-title">{year}</h2>
+
+        <div class="books-list">
+          {books.map(async (book) => {
+            const { Content } = await render(book)
+            const date = book.data.dateFinished || book.data.dateStarted || book.data.dateAdded
+            const readingTime = getReadingTime(book.data.dateStarted, book.data.dateFinished)
+
+            return (
+              <article
+                class={`book-entry ${book.data.language === 'ar' ? 'rtl' : ''}`}
+              >
+                <!-- Date and Status -->
+                <div class="book-date">
+                  {formatDate(date)}
+                  {readingTime && ` · ${readingTime}`}
+                </div>
+                <div class="book-status-badge">
+                  {book.data.status.replace('-', ' ')}
+                </div>
+
+                <!-- Title and Author -->
+                <div class="book-header">
+                  <h3 class="book-title">{book.data.title}</h3>
+                  <p class="book-author">{book.data.author}</p>
+                </div>
+
+                <!-- Progress Bar for Currently Reading -->
+                {book.data.status === 'reading' && book.data.progress && (
+                  <div class="book-progress">
+                    {book.data.progress}% · page {book.data.currentPage} of {book.data.totalPages}
+                    <div class="progress-bar">
+                      <div
+                        class="progress-fill"
+                        style={`width: ${book.data.progress}%`}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <!-- Rating -->
+                {book.data.rating && (
+                  <div class="book-rating">
+                    {book.data.rating}
+                  </div>
+                )}
+
+                <!-- Book Content/Review -->
+                <div class="book-content">
+                  <Content />
+                </div>
+
+                <!-- Quote -->
+                {book.data.quote && (
+                  <div class="book-quote">
+                    "{book.data.quote}"
+                  </div>
+                )}
+
+                <!-- Tags -->
+                {book.data.tags && book.data.tags.length > 0 && (
+                  <div class="book-tags">
+                    {book.data.tags.map(tag => `#${tag}`).join(' · ')}
+                  </div>
+                )}
+              </article>
+            )
+          })}
+        </div>
+      </section>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  .reading-page {
+    margin-top: 2.625rem; /* mt-10.5 equivalent (42px) */
+  }
+
+  /* Year Section */
+  .year-section {
+    margin-bottom: 3.75rem; /* 60px */
+  }
+
+  .year-title {
+    font-size: 1.125rem; /* text-4.5 equivalent (18px) */
+    font-weight: bold;
+    color: var(--c-primary);
+    margin-bottom: 2.5rem; /* 40px */
+    text-align: left;
+  }
+
+  /* Book Entry - Minimal Timeline */
+  .books-list {
+    position: relative;
+  }
+
+  .book-entry {
+    margin-bottom: 60px;
+    padding-left: 60px;
+    position: relative;
+  }
+
+  /* Timeline dot */
+  .book-entry::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    background: var(--c-primary, #8b2942);
+    border-radius: 50%;
+  }
+
+  /* Connecting line between books */
+  .book-entry:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 16px;
+    width: 1px;
+    height: calc(100% + 44px);
+    background: #e5e5e5;
+    z-index: -1;
+  }
+
+  .book-date {
+    font-size: 0.8rem; /* text-3.2 equivalent */
+    color: var(--c-secondary);
+    opacity: 0.5;
+    font-style: italic;
+    position: absolute;
+    left: -165px;
+    top: 6px;
+    width: 150px;
+    text-align: right;
+  }
+
+  .book-status-badge {
+    font-size: 0.55rem; /* text-2.2 equivalent */
+    color: var(--c-secondary);
+    opacity: 0.4;
+    text-transform: uppercase;
+    position: absolute;
+    left: -165px;
+    top: 26px;
+    width: 150px;
+    text-align: right;
+  }
+
+  .book-header {
+    margin-bottom: 16px;
+  }
+
+  .book-title {
+    font-size: 0.95rem; /* text-3.8 equivalent */
+    color: var(--c-primary);
+    font-weight: normal;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .book-author {
+    font-size: 0.9rem; /* text-3.6 equivalent */
+    color: var(--c-secondary);
+    opacity: 0.7;
+    font-style: italic;
+  }
+
+  /* Progress for currently reading */
+  .book-progress {
+    font-size: 14px;
+    color: var(--c-primary, #8b2942);
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+
+  .progress-bar {
+    width: 200px;
+    height: 2px;
+    background: #f0f0f0;
+    margin-top: 6px;
+    position: relative;
+  }
+
+  .progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--c-primary, #8b2942);
+  }
+
+  /* Rating */
+  .book-rating {
+    color: var(--c-primary, #8b2942);
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  /* Review/Thoughts */
+  .book-content {
+    font-size: 0.9rem; /* text-3.6 equivalent */
+    color: var(--c-secondary);
+    opacity: 0.8;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .book-content :global(p) {
+    margin-bottom: 16px;
+  }
+
+  .book-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Quote */
+  .book-quote {
+    margin-top: 20px;
+    padding-left: 20px;
+    border-left: 2px solid var(--c-secondary);
+    border-left-opacity: 0.15;
+    font-style: italic;
+    color: var(--c-secondary);
+    opacity: 0.6;
+    line-height: 1.7;
+  }
+
+  /* Tags - minimal */
+  .book-tags {
+    margin-top: 16px;
+    font-size: 0.55rem; /* text-2.2 equivalent */
+    color: var(--c-secondary);
+    opacity: 0.4;
+  }
+
+  /* RTL Support */
+  .book-entry.rtl {
+    direction: rtl;
+    text-align: right;
+    padding-left: 0;
+    padding-right: 60px;
+  }
+
+  .book-entry.rtl::before {
+    left: auto;
+    right: 8px;
+  }
+
+  .book-entry.rtl:not(:last-child)::after {
+    left: auto;
+    right: 11px;
+  }
+
+  .book-entry.rtl .book-date,
+  .book-entry.rtl .book-status-badge {
+    left: auto;
+    right: -165px;
+    text-align: left;
+  }
+
+  .book-entry.rtl .book-quote {
+    padding-left: 0;
+    padding-right: 20px;
+    border-left: none;
+    border-right: 2px solid var(--c-secondary);
+    border-right-opacity: 0.15;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .reading-page {
+      padding: 40px 20px 60px;
+    }
+
+    .book-entry {
+      padding-left: 40px;
+    }
+
+    .book-entry::after {
+      left: 11px;
+    }
+
+    .book-date,
+    .book-status-badge {
+      position: static;
+      text-align: left;
+      width: auto;
+      margin-bottom: 8px;
+    }
+
+    .book-entry.rtl {
+      padding-right: 40px;
+    }
+
+    .book-entry.rtl .book-date,
+    .book-entry.rtl .book-status-badge {
+      text-align: right;
+    }
+
+    .year-title {
+      font-size: 28px;
+    }
+
+    .book-title {
+      font-size: 24px;
+    }
+  }
+</style>

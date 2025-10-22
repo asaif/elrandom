@@ -34,4 +34,25 @@ const about = defineCollection({
   }),
 })
 
-export const collections = { posts, about }
+const books = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/books' }),
+  schema: z.object({
+    title: z.string(),
+    author: z.string(),
+    status: z.enum(['reading', 'finished', 'want-to-read']),
+    dateStarted: z.date().optional(),
+    dateFinished: z.date().optional(),
+    dateAdded: z.date(),
+    rating: z.string().optional(),
+    progress: z.number().optional(),
+    currentPage: z.number().optional(),
+    totalPages: z.number().optional(),
+    quote: z.string().optional(),
+    tags: z.array(z.string()),
+    language: z.enum(['en', 'ar']).default('en'),
+    isbn: z.string().optional(),
+    year: z.number(),
+  }),
+})
+
+export const collections = { posts, about, books }
