@@ -83,11 +83,11 @@ const yearsArray = Array.from(postsByYear.entries())
             
             <!-- Timeline Column -->
             <div class="relative w-4 h-full flex items-center justify-center">
-              <!-- Year Circle (no line through it) -->
-              <div class="w-3 h-3 rounded-full border-2 border-accent bg-white relative z-10"></div>
+              <!-- Year Circle -->
+              <div class="w-2 h-2 rounded-full bg-primary relative z-10"></div>
               <!-- Line starts AFTER the circle and continues to next section -->
               {(posts.length > 0 || yearIndex < yearsArray.length - 1) && (
-                <div class="absolute w-px timeline-line-year border-l border-dotted border-secondary/30 left-1/2 transform -translate-x-1/2"></div>
+                <div class="absolute w-px timeline-line-year left-1/2 transform -translate-x-1/2" style="background: #e5e5e5;"></div>
               )}
             </div>
             
@@ -103,27 +103,27 @@ const yearsArray = Array.from(postsByYear.entries())
             const postPath = getPostPath(slug, lang)
             
             return (
-              <div class="flex items-center h-10 mb-1 group">
+              <div class="flex mb-1 group">
                 <!-- Date -->
-                <div class="w-16 text-right pr-4">
-                  <time 
+                <div class="w-16 text-right pr-4 pt-0.5">
+                  <time
                     class="text-3.2 c-secondary font-time"
                     datetime={post.data.published.toISOString()}
                   >
                     {formatDate(post.data.published)}
                   </time>
                 </div>
-                
+
                 <!-- Timeline Column -->
-                <div class="relative w-4 h-full flex items-center justify-center">
+                <div class="relative w-4 flex justify-center pt-1.5">
                   <!-- Line continues only to next post in same year -->
                   {postIndex < posts.length - 1 && (
-                    <div class="absolute w-px timeline-line-post border-l border-dotted border-secondary/30 left-1/2 transform -translate-x-1/2"></div>
+                    <div class="absolute w-px timeline-line-post left-1/2 transform -translate-x-1/2 top-0" style="background: #e5e5e5;"></div>
                   )}
-                  <!-- Post Dot with white outline to create gap -->
-                  <div class="w-1.5 h-1.5 rounded-full bg-primary outline outline-4 outline-white relative z-10"></div>
+                  <!-- Post Dot -->
+                  <div class="w-2 h-2 rounded-full bg-primary relative z-10"></div>
                 </div>
-                
+
                 <!-- Post Content -->
                 <div class="flex-1 pl-4">
                   <a

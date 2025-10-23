@@ -1,24 +1,35 @@
 ---
 import { getCollection, render } from 'astro:content'
 import Layout from '@/layouts/Layout.astro'
+import { defaultLocale, moreLocales } from '@/config'
 
 export async function getStaticPaths() {
   const books = await getCollection('books')
+  const paths: any[] = []
 
-  const paths = books.map(book => {
+  books.forEach(book => {
     const bookId = book.id.replace('.md', '').replace('.mdx', '')
-    console.log('Generating book path:', bookId, 'for book:', book.data.title)
-    return {
-      params: { bookId },
-      props: { book },
-    }
+
+    // Generate path for default locale (English): /book/bookId/
+    paths.push({
+      params: { book_id: `book/${bookId}/` },
+      props: { book, lang: defaultLocale },
+    })
+
+    // Generate paths for other locales (Arabic): /ar/book/bookId/
+    moreLocales.forEach(lang => {
+      paths.push({
+        params: { book_id: `${lang}/book/${bookId}/` },
+        props: { book, lang },
+      })
+    })
   })
 
   console.log('Total book paths generated:', paths.length)
   return paths
 }
 
-const { book } = Astro.props
+const { book, lang } = Astro.props
 const { Content } = await render(book)
 
 // Calculate reading time
@@ -54,10 +65,10 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
 ---
 
 <Layout>
-  <div class="book-detail-page" dir={book.data.language === 'ar' ? 'rtl' : 'ltr'}>
+  <div class="book-detail-page" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
     <!-- Back Link -->
-    <a href={`/${book.data.language === 'ar' ? 'ar/' : ''}books/`} class="back-link">
-      ← {book.data.language === 'ar' ? 'العودة إلى الكتب' : 'Back to Reading'}
+    <a href={`/${lang === defaultLocale ? '' : lang + '/'}books/`} class="back-link">
+      ← {lang === 'ar' ? 'العودة إلى الكتب' : 'Back to Reading'}
     </a>
 
     <!-- Book Header with Cover -->
@@ -177,7 +188,7 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
       <>
         <h2 class="section-title">Reading Timeline</h2>
         <div class="timeline-section">
-          {book.data.timeline.map((entry) => (
+          {book.data.timeline.map((entry: { date: Date; note: string }) => (
             <div class="timeline-item">
               <div class="timeline-content">
                 <div class="timeline-note">{entry.note}</div>
@@ -194,9 +205,9 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
       <>
         <h2 class="section-title">Tags & Categories</h2>
         <div class="tags-section">
-          {book.data.tags.map(tag => (
+          {book.data.tags.map((tag: string) => (
             <a
-              href={`/${book.data.language === 'ar' ? 'ar/' : ''}tags/${tag}/`}
+              href={`/${lang === defaultLocale ? '' : lang + '/'}tags/${tag}/`}
               class="tag-link"
             >
               {tag}
