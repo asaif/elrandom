@@ -432,13 +432,20 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
   }
 
   .rating-stars {
-    font-size: 3rem;
+    font-size: 2rem;
     margin-bottom: 1rem;
-    letter-spacing: 0.25rem;
+    letter-spacing: 0.15rem;
   }
 
   .rating-stars .star {
     display: inline-block;
+  }
+
+  @media (max-width: 640px) {
+    .rating-stars {
+      font-size: 1.5rem;
+      letter-spacing: 0.1rem;
+    }
   }
 
   .rating-stars .star.filled {

@@ -1,6 +1,6 @@
 ---
 import { defaultLocale, moreLocales } from '@/config'
-import { getCollection, render } from 'astro:content'
+import { getCollection } from 'astro:content'
 import Layout from '@/layouts/Layout.astro'
 import { ui } from '@/i18n/ui'
 
@@ -35,23 +35,6 @@ const currentUI = ui[lang as keyof typeof ui] ?? {}
 // Get all books
 const allBooks = await getCollection('books')
 
-// Sort by date (most recent first)
-const sortedBooks = allBooks.sort((a, b) => {
-  const dateA = a.data.dateFinished || a.data.dateStarted || a.data.dateAdded
-  const dateB = b.data.dateFinished || b.data.dateStarted || b.data.dateAdded
-  return dateB.getTime() - dateA.getTime()
-})
-
-// Group by year
-const booksByYear = sortedBooks.reduce((acc, book) => {
-  const year = book.data.year
-  if (!acc[year]) {
-    acc[year] = []
-  }
-  acc[year].push(book)
-  return acc
-}, {} as Record<number, typeof sortedBooks>)
-
 // Calculate stats
 const currentYear = new Date().getFullYear()
 
@@ -82,25 +65,6 @@ const stats = {
 }
 
 console.log('Stats:', stats)
-
-// Format date helper
-function formatDate(date: Date): string {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  const month = months[date.getMonth()]
-  const day = String(date.getDate()).padStart(2, '0')
-  const year = date.getFullYear()
-  return `${month} ${day}, ${year}`
-}
-
-// Calculate reading time helper
-function getReadingTime(startDate?: Date, endDate?: Date): string {
-  if (!startDate) return ''
-  const end = endDate || new Date()
-  const days = Math.floor((end.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
-  if (days === 0) return 'Started today'
-  if (days === 1) return '1 day'
-  return `${days} days`
-}
 ---
 
 <Layout>
@@ -124,340 +88,387 @@ function getReadingTime(startDate?: Date, endDate?: Date): string {
     </div>
   </div>
 
-  <div class="reading-page">
+  <!-- Status Tabs -->
+  <div class="status-tabs" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    <button class="tab-button active" data-status="reading">
+      {lang === 'ar' ? 'أقرأ' : 'READING'}
+    </button>
+    <button class="tab-button" data-status="finished">
+      {lang === 'ar' ? 'قرأته' : 'FINISHED'}
+    </button>
+    <button class="tab-button" data-status="want-to-read">
+      {lang === 'ar' ? 'أنوي قرائته' : 'WANT TO READ'}
+    </button>
+  </div>
 
-    <!-- Books by Year -->
-    {Object.entries(booksByYear).sort(([a], [b]) => Number(b) - Number(a)).map(([year, books]) => (
-      <section class="year-section">
-        <h2 class="year-title">{year}</h2>
+  <!-- Books List -->
+  <div class="books-container">
+    {allBooks.map((book) => {
+      const bookId = book.id.replace('.md', '').replace('.mdx', '')
+      const numericRating = book.data.rating ? (book.data.rating.match(/★/g) || []).length : 0
 
-        <div class="books-list">
-          {books.map(async (book) => {
-            const { Content } = await render(book)
-            const date = book.data.dateFinished || book.data.dateStarted || book.data.dateAdded
-            const readingTime = getReadingTime(book.data.dateStarted, book.data.dateFinished)
-
-            return (
-              <article
-                class={`book-entry ${book.data.language === 'ar' ? 'rtl' : ''}`}
-              >
-                <!-- Date and Status -->
-                <div class="book-date">
-                  {formatDate(date)}
-                  {readingTime && ` · ${readingTime}`}
+      return (
+        <article class="book-card" data-status={book.data.status}>
+          <a href={`/book/${bookId}/`} class="book-card-link">
+            <!-- Book Cover -->
+            <div class="book-cover-wrapper">
+              {book.data.coverImage ? (
+                <img src={book.data.coverImage} alt={book.data.title} class="book-cover-img" />
+              ) : (
+                <div class="book-cover-placeholder">
+                  <span class="placeholder-text">{book.data.title}</span>
                 </div>
-                <div class="book-status-badge">
-                  {book.data.status.replace('-', ' ')}
-                </div>
+              )}
+            </div>
 
-                <!-- Title and Author -->
-                <div class="book-header">
-                  <a href={`/book/${book.id.replace('.md', '').replace('.mdx', '')}/`} class="book-title-link">
-                    <h3 class="book-title hover:c-primary transition-colors">{book.data.title}</h3>
-                  </a>
-                  <p class="book-author">{book.data.author}</p>
-                </div>
+            <!-- Book Info -->
+            <div class="book-info">
+              <h3 class="book-card-title">{book.data.title}</h3>
+              <p class="book-card-author">{book.data.author}</p>
 
-                <!-- Progress Bar for Currently Reading -->
-                {book.data.status === 'reading' && book.data.progress && (
-                  <div class="book-progress">
-                    {book.data.progress}% · page {book.data.currentPage} of {book.data.totalPages}
-                    <div class="progress-bar">
-                      <div
-                        class="progress-fill"
-                        style={`width: ${book.data.progress}%`}
-                      />
+              <!-- Progress Bar for Reading -->
+              {book.data.status === 'reading' && book.data.progress && (
+                <div class="book-progress-section">
+                  <div class="progress-bar-wrapper">
+                    <div class="progress-bar-bg">
+                      <div class="progress-bar-fill" style={`width: ${book.data.progress}%`}></div>
                     </div>
+                    <span class="progress-text">{book.data.progress}%</span>
                   </div>
-                )}
-
-                <!-- Rating -->
-                {book.data.rating && (
-                  <div class="book-rating">
-                    {book.data.rating}
-                  </div>
-                )}
-
-                <!-- Book Content/Review -->
-                <div class="book-content">
-                  <Content />
                 </div>
+              )}
 
-                <!-- Quote -->
-                {book.data.quote && (
-                  <div class="book-quote">
-                    "{book.data.quote}"
-                  </div>
-                )}
-
-                <!-- Tags -->
-                {book.data.tags && book.data.tags.length > 0 && (
-                  <div class="flex gap-1 flex-wrap mt-4">
-                    {book.data.tags.map(tag => (
-                      <a
-                        href={`/${lang === defaultLocale ? '' : lang + '/'}tags/${tag}/`}
-                        class="inline-block px-2 py-0.4 text-2.2 leading-none c-secondary/50 bg-secondary/4 rounded-full hover:c-secondary/70 hover:bg-secondary/8 transition-all duration-200 ease-out text-decoration-none whitespace-nowrap"
-                      >
-                        {tag}
-                      </a>
+              <!-- Rating for Finished -->
+              {book.data.status === 'finished' && book.data.rating && (
+                <div class="book-rating-section">
+                  <div class="rating-stars-small">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span class={star <= numericRating ? 'star-small filled' : 'star-small empty'}>★</span>
                     ))}
                   </div>
-                )}
-              </article>
-            )
-          })}
-        </div>
-      </section>
-    ))}
+                </div>
+              )}
+            </div>
+          </a>
+        </article>
+      )
+    })}
   </div>
+
+  <script is:inline>
+    // Tab functionality - using is:inline to ensure it runs on every page load
+    (function() {
+      function initTabs() {
+        const tabs = document.querySelectorAll('.tab-button')
+        const books = document.querySelectorAll('.book-card')
+
+        if (tabs.length === 0 || books.length === 0) return
+
+        // Remove existing event listeners by cloning nodes
+        tabs.forEach(function(tab) {
+          var newTab = tab.cloneNode(true)
+          tab.parentNode.replaceChild(newTab, tab)
+        })
+
+        // Get fresh references after cloning
+        const freshTabs = document.querySelectorAll('.tab-button')
+
+        // Add event listeners to fresh tabs
+        freshTabs.forEach(function(tab) {
+          tab.addEventListener('click', function(e) {
+            e.preventDefault()
+            const status = tab.getAttribute('data-status')
+
+            // Update active tab
+            freshTabs.forEach(function(t) {
+              t.classList.remove('active')
+            })
+            tab.classList.add('active')
+
+            // Show/hide books based on status
+            books.forEach(function(book) {
+              if (book.getAttribute('data-status') === status) {
+                book.style.display = 'flex'
+              } else {
+                book.style.display = 'none'
+              }
+            })
+          })
+        })
+      }
+
+      // Run on initial page load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTabs)
+      } else {
+        initTabs()
+      }
+
+      // Re-run on Astro page navigation (view transitions)
+      document.addEventListener('astro:page-load', initTabs)
+    })()
+  </script>
 </Layout>
 
+
 <style>
-  .reading-page {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 60px 40px 100px;
+  /* Status Tabs */
+  .status-tabs {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0;
   }
 
-  /* Reading Stats - Minimal */
-  .reading-stats {
-    text-align: left;
-    margin-bottom: 60px;
-    padding-bottom: 40px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .stats-line {
-    font-size: 15px;
+  .tab-button {
+    background: none;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     color: #999;
-    font-style: italic;
-    margin-bottom: 8px;
-  }
-
-  .stats-line strong {
-    color: var(--c-primary, #8b2942);
-    font-weight: normal;
-  }
-
-  /* Year Section */
-  .year-section {
-    margin-bottom: 60px;
-  }
-
-  .year-title {
-    font-size: 36px;
-    font-style: italic;
-    color: var(--c-primary, #8b2942);
-    margin-bottom: 40px;
-    text-align: left;
-  }
-
-  /* Book Entry - Minimal Timeline */
-  .books-list {
+    padding: 1rem 0;
+    cursor: pointer;
     position: relative;
+    transition: color 0.2s;
   }
 
-  .book-entry {
-    margin-bottom: 60px;
-    padding-left: 60px;
-    position: relative;
+  .tab-button:hover {
+    color: oklch(43% 0.17 12.15);
   }
 
-  /* Timeline dot */
-  .book-entry::before {
+  .tab-button.active {
+    color: oklch(43% 0.17 12.15);
+  }
+
+  .tab-button.active::after {
     content: '';
     position: absolute;
-    left: 8px;
-    top: 8px;
-    width: 8px;
-    height: 8px;
-    background: var(--c-primary, #8b2942);
-    border-radius: 50%;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: oklch(43% 0.17 12.15);
   }
 
-  /* Connecting line between books */
-  .book-entry:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 11px;
-    top: 16px;
-    width: 1px;
-    height: calc(100% + 44px);
-    background: #e5e5e5;
-    z-index: -1;
+  /* Books Container */
+  .books-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
   }
 
-  .book-date {
-    font-size: 13px;
-    color: #bbb;
-    font-style: italic;
-    position: absolute;
-    left: -165px;
-    top: 6px;
-    width: 150px;
-    text-align: right;
+  .book-card {
+    display: none;
   }
 
-  .book-status-badge {
-    font-size: 11px;
-    color: #999;
-    position: absolute;
-    left: -165px;
-    top: 26px;
-    width: 150px;
-    text-align: right;
+  .book-card[data-status="reading"] {
+    display: flex;
   }
 
-  .book-header {
-    margin-bottom: 16px;
-  }
-
-  .book-title-link {
+  .book-card-link {
     text-decoration: none;
     color: inherit;
+    display: flex;
+    gap: 1.5rem;
+    width: 100%;
+    align-items: flex-start;
   }
 
-  .book-title {
-    font-size: 28px;
-    color: #333;
-    font-weight: normal;
-    margin-bottom: 6px;
+  /* Book Cover */
+  .book-cover-wrapper {
+    width: 120px;
+    height: 160px;
+    flex-shrink: 0;
+    background: #e5e5e5;
+    overflow: hidden;
+  }
+
+  .book-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .book-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .placeholder-text {
+    font-size: 0.75rem;
+    color: #999;
+    text-align: center;
     line-height: 1.3;
-    cursor: pointer;
   }
 
-  .book-author {
-    font-size: 16px;
+  /* Book Info */
+  .book-info {
+    flex: 1;
+    padding: 0;
+  }
+
+  .book-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+    transition: color 0.2s;
+  }
+
+  .book-card-link:hover .book-card-title {
+    color: oklch(43% 0.17 12.15);
+  }
+
+  .book-card-author {
+    font-size: 0.875rem;
     color: #999;
     font-style: italic;
+    margin: 0 0 1rem 0;
   }
 
-  /* Progress for currently reading */
-  .book-progress {
-    font-size: 14px;
-    color: var(--c-primary, #8b2942);
-    margin-top: 12px;
-    margin-bottom: 12px;
+  /* Progress Bar */
+  .book-progress-section {
+    margin-top: 1rem;
   }
 
-  .progress-bar {
-    width: 200px;
-    height: 2px;
-    background: #f0f0f0;
-    margin-top: 6px;
-    position: relative;
+  .progress-bar-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
-  .progress-fill {
-    position: absolute;
-    left: 0;
-    top: 0;
+  .progress-bar-bg {
+    flex: 1;
+    height: 4px;
+    background: #e5e5e5;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
     height: 100%;
-    background: var(--c-primary, #8b2942);
+    background: oklch(43% 0.17 12.15);
+    transition: width 0.3s ease;
   }
 
-  /* Rating */
-  .book-rating {
-    color: var(--c-primary, #8b2942);
-    font-size: 14px;
-    margin-bottom: 16px;
-  }
-
-  /* Review/Thoughts */
-  .book-content {
-    font-size: 16px;
-    color: #666;
-    line-height: 1.8;
-    margin-bottom: 20px;
-  }
-
-  .book-content :global(p) {
-    margin-bottom: 16px;
-  }
-
-  .book-content :global(p:last-child) {
-    margin-bottom: 0;
-  }
-
-  /* Quote */
-  .book-quote {
-    margin-top: 20px;
-    padding-left: 20px;
-    border-left: 2px solid #e5e5e5;
-    font-style: italic;
-    color: #888;
-    line-height: 1.8;
-  }
-
-  /* RTL Support */
-  .book-entry.rtl {
-    direction: rtl;
+  .progress-text {
+    font-size: 0.75rem;
+    color: #999;
+    min-width: 2.5rem;
     text-align: right;
-    padding-left: 0;
-    padding-right: 60px;
   }
 
-  .book-entry.rtl::before {
-    left: auto;
-    right: 8px;
+  /* Rating Stars */
+  .book-rating-section {
+    margin-top: 1rem;
   }
 
-  .book-entry.rtl:not(:last-child)::after {
-    left: auto;
-    right: 11px;
+  .rating-stars-small {
+    font-size: 0.875rem;
+    letter-spacing: 2px;
   }
 
-  .book-entry.rtl .book-date,
-  .book-entry.rtl .book-status-badge {
-    left: auto;
-    right: -165px;
-    text-align: left;
+  .rating-stars-small .star-small {
+    display: inline-block;
   }
 
-  .book-entry.rtl .book-quote {
-    padding-left: 0;
-    padding-right: 20px;
-    border-left: none;
-    border-right: 2px solid #e5e5e5;
+  .rating-stars-small .star-small.filled {
+    color: oklch(43% 0.17 12.15);
   }
 
-  /* Responsive */
+  .rating-stars-small .star-small.empty {
+    color: #e5e5e5;
+  }
+
+  /* Dark Mode */
+  html.dark .tab-button {
+    color: oklch(77% 0.005 298);
+  }
+
+  html.dark .tab-button:hover,
+  html.dark .tab-button.active {
+    color: oklch(92% 0.005 298);
+  }
+
+  html.dark .tab-button.active::after {
+    background: oklch(92% 0.005 298);
+  }
+
+  html.dark .book-card-title {
+    color: oklch(92% 0.005 298);
+  }
+
+  html.dark .book-card-link:hover .book-card-title {
+    color: oklch(92% 0.005 298);
+  }
+
+  html.dark .book-card-author {
+    color: oklch(77% 0.005 298);
+  }
+
+  html.dark .book-cover-placeholder {
+    background: oklch(40% 0.005 298 / 0.2);
+  }
+
+  html.dark .placeholder-text {
+    color: oklch(77% 0.005 298);
+  }
+
+  html.dark .progress-bar-bg {
+    background: oklch(40% 0.005 298 / 0.2);
+  }
+
+  html.dark .progress-bar-fill {
+    background: oklch(92% 0.005 298);
+  }
+
+  html.dark .progress-text {
+    color: oklch(77% 0.005 298);
+  }
+
+  html.dark .rating-stars-small .star-small.filled {
+    color: oklch(92% 0.005 298);
+  }
+
+  html.dark .rating-stars-small .star-small.empty {
+    color: oklch(40% 0.005 298 / 0.2);
+  }
+
   @media (max-width: 768px) {
-    .reading-page {
-      padding: 40px 20px 60px;
+    .book-card-link {
+      gap: 1rem;
     }
 
-    .book-entry {
-      padding-left: 40px;
+    .book-cover-wrapper {
+      width: 100px;
+      height: 140px;
     }
 
-    .book-entry::after {
-      left: 11px;
+    .book-card-title {
+      font-size: 1rem;
     }
 
-    .book-date,
-    .book-status-badge {
-      position: static;
-      text-align: left;
-      width: auto;
-      margin-bottom: 8px;
+    .book-card-author {
+      font-size: 0.8125rem;
     }
 
-    .book-entry.rtl {
-      padding-right: 40px;
+    .status-tabs {
+      gap: 1rem;
+      overflow-x: auto;
     }
 
-    .book-entry.rtl .book-date,
-    .book-entry.rtl .book-status-badge {
-      text-align: right;
-    }
-
-    .year-title {
-      font-size: 28px;
-    }
-
-    .book-title {
-      font-size: 24px;
+    .tab-button {
+      font-size: 0.75rem;
+      white-space: nowrap;
     }
   }
 </style>
