@@ -4,7 +4,6 @@ author: "طه حسين"
 status: "reading"
 dateStarted: 2024-10-15
 dateAdded: 2024-12-01
-progress: 54
 currentPage: 120
 totalPages: 285
 genre: "السيرة الذاتية"

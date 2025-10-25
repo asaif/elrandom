@@ -95,6 +95,11 @@ const stats = {
       const bookId = book.id.replace('.md', '').replace('.mdx', '')
       const numericRating = book.data.rating ? (book.data.rating.match(/★/g) || []).length : 0
 
+      // Calculate progress percentage from currentPage and totalPages
+      const progressPercentage = book.data.currentPage && book.data.totalPages && book.data.totalPages > 0
+        ? Math.round((book.data.currentPage / book.data.totalPages) * 100)
+        : 0
+
       return (
         <article class="book-list-card" data-status={book.data.status}>
           <a href={`/book/${bookId}/`} class="book-list-card-link">
@@ -115,13 +120,13 @@ const stats = {
               <p class="book-list-card-author font-serif">{book.data.author}</p>
 
               <!-- Progress Bar for Reading -->
-              {book.data.status === 'reading' && book.data.progress && (
+              {book.data.status === 'reading' && progressPercentage > 0 && (
                 <div class="book-list-progress-section">
                   <div class="book-list-progress-wrapper">
                     <div class="book-list-progress-bg">
-                      <div class="book-list-progress-fill" style={`width: ${book.data.progress}%`}></div>
+                      <div class="book-list-progress-fill" style={`width: ${progressPercentage}%`}></div>
                     </div>
-                    <span class="book-list-progress-text">{book.data.progress}%</span>
+                    <span class="book-list-progress-text">{progressPercentage}%</span>
                   </div>
                 </div>
               )}

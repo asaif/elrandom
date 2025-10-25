@@ -5,7 +5,6 @@ status: "reading"
 coverImage: "https://covers.openlibrary.org/b/isbn/0060883286-L.jpg"
 dateStarted: 2024-12-01
 dateAdded: 2024-12-01
-progress: 68
 currentPage: 284
 totalPages: 417
 genre: "Magical Realism"

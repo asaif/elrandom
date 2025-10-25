@@ -62,6 +62,15 @@ const pagesRemaining = book.data.totalPages && book.data.currentPage
   ? book.data.totalPages - book.data.currentPage
   : 0
 const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
+
+// Calculate progress percentage from currentPage and totalPages
+const calculateProgress = (): number => {
+  if (book.data.currentPage && book.data.totalPages && book.data.totalPages > 0) {
+    return Math.round((book.data.currentPage / book.data.totalPages) * 100)
+  }
+  return 0
+}
+const progressPercentage = calculateProgress()
 ---
 
 <Layout>
@@ -135,14 +144,14 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
     </div>
 
     <!-- Reading Progress -->
-    {book.data.status === 'reading' && book.data.progress && (
+    {book.data.status === 'reading' && progressPercentage > 0 && (
       <div class="book-detail-progress-section">
         <div class="book-detail-progress-header">
           <h2 class="book-detail-progress-title font-navbar">{lang === 'ar' ? 'تقدم القراءة' : 'Reading Progress'}</h2>
-          <div class="book-detail-progress-percentage font-serif">{book.data.progress}%</div>
+          <div class="book-detail-progress-percentage font-serif">{progressPercentage}%</div>
         </div>
         <div class="book-detail-progress-bar-container">
-          <div class="book-detail-progress-bar-fill" style={`width: ${book.data.progress}%`}></div>
+          <div class="book-detail-progress-bar-fill" style={`width: ${progressPercentage}%`}></div>
         </div>
         <div class="book-detail-progress-detail font-serif">
           {lang === 'ar'
