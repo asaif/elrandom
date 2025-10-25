@@ -107,7 +107,6 @@
   width: 120px;
   height: 160px;
   flex-shrink: 0;
-  background: #e5e5e5;
   overflow: hidden;
 }
 
@@ -332,7 +331,6 @@ html.dark .books-tab-button.active::after {
   font-size: 2.625rem;
   color: oklch(var(--un-preset-theme-colors-primary));
   font-weight: normal;
-  font-style: italic;
   margin-bottom: 0.75rem;
   line-height: 1.2;
 }
