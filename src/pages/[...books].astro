@@ -3,6 +3,7 @@ import { defaultLocale, moreLocales } from '@/config'
 import { getCollection } from 'astro:content'
 import Layout from '@/layouts/Layout.astro'
 import { ui } from '@/i18n/ui'
+import '@/styles/books.css'
 
 export async function getStaticPaths() {
   type PathItem = {
@@ -38,23 +39,12 @@ const allBooks = await getCollection('books')
 // Calculate stats
 const currentYear = new Date().getFullYear()
 
-// Debug logging
-console.log('Current year:', currentYear)
-console.log('All books:', allBooks.map(b => ({
-  title: b.data.title,
-  year: b.data.year,
-  status: b.data.status,
-  totalPages: b.data.totalPages,
-  currentPage: b.data.currentPage
-})))
-
 const stats = {
   booksRead: allBooks.filter(b => b.data.status === 'finished').length,
   currentlyReading: allBooks.filter(b => b.data.status === 'reading').length,
   pagesThisYear: allBooks
     .filter(b => b.data.year === currentYear)
     .reduce((sum, book) => {
-      console.log('Processing book:', book.data.title, 'status:', book.data.status, 'totalPages:', book.data.totalPages, 'currentPage:', book.data.currentPage)
       if (book.data.status === 'finished') {
         return sum + (book.data.totalPages || 0)
       } else if (book.data.status === 'reading') {
@@ -63,8 +53,6 @@ const stats = {
       return sum
     }, 0),
 }
-
-console.log('Stats:', stats)
 ---
 
 <Layout>
@@ -89,61 +77,61 @@ console.log('Stats:', stats)
   </div>
 
   <!-- Status Tabs -->
-  <div class="status-tabs" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-    <button class="tab-button active" data-status="reading">
+  <div class="books-status-tabs font-serif" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    <button class="books-tab-button active" data-status="reading">
       {lang === 'ar' ? 'أقرأ' : 'READING'}
     </button>
-    <button class="tab-button" data-status="finished">
+    <button class="books-tab-button" data-status="finished">
       {lang === 'ar' ? 'قرأته' : 'FINISHED'}
     </button>
-    <button class="tab-button" data-status="want-to-read">
+    <button class="books-tab-button" data-status="want-to-read">
       {lang === 'ar' ? 'أنوي قرائته' : 'WANT TO READ'}
     </button>
   </div>
 
   <!-- Books List -->
-  <div class="books-container">
+  <div class="books-list-container">
     {allBooks.map((book) => {
       const bookId = book.id.replace('.md', '').replace('.mdx', '')
       const numericRating = book.data.rating ? (book.data.rating.match(/★/g) || []).length : 0
 
       return (
-        <article class="book-card" data-status={book.data.status}>
-          <a href={`/book/${bookId}/`} class="book-card-link">
+        <article class="book-list-card" data-status={book.data.status}>
+          <a href={`/book/${bookId}/`} class="book-list-card-link">
             <!-- Book Cover -->
-            <div class="book-cover-wrapper">
+            <div class="book-list-cover-wrapper">
               {book.data.coverImage ? (
-                <img src={book.data.coverImage} alt={book.data.title} class="book-cover-img" />
+                <img src={book.data.coverImage} alt={book.data.title} class="book-list-cover-img" />
               ) : (
-                <div class="book-cover-placeholder">
-                  <span class="placeholder-text">{book.data.title}</span>
+                <div class="book-list-cover-placeholder">
+                  <span class="book-list-placeholder-text">{book.data.title}</span>
                 </div>
               )}
             </div>
 
             <!-- Book Info -->
-            <div class="book-info">
-              <h3 class="book-card-title">{book.data.title}</h3>
-              <p class="book-card-author">{book.data.author}</p>
+            <div class="book-list-info">
+              <h3 class="book-list-card-title font-navbar">{book.data.title}</h3>
+              <p class="book-list-card-author font-serif">{book.data.author}</p>
 
               <!-- Progress Bar for Reading -->
               {book.data.status === 'reading' && book.data.progress && (
-                <div class="book-progress-section">
-                  <div class="progress-bar-wrapper">
-                    <div class="progress-bar-bg">
-                      <div class="progress-bar-fill" style={`width: ${book.data.progress}%`}></div>
+                <div class="book-list-progress-section">
+                  <div class="book-list-progress-wrapper">
+                    <div class="book-list-progress-bg">
+                      <div class="book-list-progress-fill" style={`width: ${book.data.progress}%`}></div>
                     </div>
-                    <span class="progress-text">{book.data.progress}%</span>
+                    <span class="book-list-progress-text">{book.data.progress}%</span>
                   </div>
                 </div>
               )}
 
               <!-- Rating for Finished -->
               {book.data.status === 'finished' && book.data.rating && (
-                <div class="book-rating-section">
-                  <div class="rating-stars-small">
+                <div class="book-list-rating-section">
+                  <div class="book-list-rating-stars">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <span class={star <= numericRating ? 'star-small filled' : 'star-small empty'}>★</span>
+                      <span class={star <= numericRating ? 'book-list-star-filled' : 'book-list-star-empty'}>★</span>
                     ))}
                   </div>
                 </div>
@@ -159,8 +147,8 @@ console.log('Stats:', stats)
     // Tab functionality - using is:inline to ensure it runs on every page load
     (function() {
       function initTabs() {
-        const tabs = document.querySelectorAll('.tab-button')
-        const books = document.querySelectorAll('.book-card')
+        const tabs = document.querySelectorAll('.books-tab-button')
+        const books = document.querySelectorAll('.book-list-card')
 
         if (tabs.length === 0 || books.length === 0) return
 
@@ -171,7 +159,7 @@ console.log('Stats:', stats)
         })
 
         // Get fresh references after cloning
-        const freshTabs = document.querySelectorAll('.tab-button')
+        const freshTabs = document.querySelectorAll('.books-tab-button')
 
         // Add event listeners to fresh tabs
         freshTabs.forEach(function(tab) {
@@ -209,266 +197,3 @@ console.log('Stats:', stats)
     })()
   </script>
 </Layout>
-
-
-<style>
-  /* Status Tabs */
-  .status-tabs {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 3rem;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 0;
-  }
-
-  .tab-button {
-    background: none;
-    border: none;
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #999;
-    padding: 1rem 0;
-    cursor: pointer;
-    position: relative;
-    transition: color 0.2s;
-  }
-
-  .tab-button:hover {
-    color: oklch(43% 0.17 12.15);
-  }
-
-  .tab-button.active {
-    color: oklch(43% 0.17 12.15);
-  }
-
-  .tab-button.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: oklch(43% 0.17 12.15);
-  }
-
-  /* Books Container */
-  .books-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-
-  .book-card {
-    display: none;
-  }
-
-  .book-card[data-status="reading"] {
-    display: flex;
-  }
-
-  .book-card-link {
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    gap: 1.5rem;
-    width: 100%;
-    align-items: flex-start;
-  }
-
-  /* Book Cover */
-  .book-cover-wrapper {
-    width: 120px;
-    height: 160px;
-    flex-shrink: 0;
-    background: #e5e5e5;
-    overflow: hidden;
-  }
-
-  .book-cover-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .book-cover-placeholder {
-    width: 100%;
-    height: 100%;
-    background: #e5e5e5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-  }
-
-  .placeholder-text {
-    font-size: 0.75rem;
-    color: #999;
-    text-align: center;
-    line-height: 1.3;
-  }
-
-  /* Book Info */
-  .book-info {
-    flex: 1;
-    padding: 0;
-  }
-
-  .book-card-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #333;
-    margin: 0 0 0.5rem 0;
-    line-height: 1.4;
-    transition: color 0.2s;
-  }
-
-  .book-card-link:hover .book-card-title {
-    color: oklch(43% 0.17 12.15);
-  }
-
-  .book-card-author {
-    font-size: 0.875rem;
-    color: #999;
-    font-style: italic;
-    margin: 0 0 1rem 0;
-  }
-
-  /* Progress Bar */
-  .book-progress-section {
-    margin-top: 1rem;
-  }
-
-  .progress-bar-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .progress-bar-bg {
-    flex: 1;
-    height: 4px;
-    background: #e5e5e5;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: oklch(43% 0.17 12.15);
-    transition: width 0.3s ease;
-  }
-
-  .progress-text {
-    font-size: 0.75rem;
-    color: #999;
-    min-width: 2.5rem;
-    text-align: right;
-  }
-
-  /* Rating Stars */
-  .book-rating-section {
-    margin-top: 1rem;
-  }
-
-  .rating-stars-small {
-    font-size: 0.875rem;
-    letter-spacing: 2px;
-  }
-
-  .rating-stars-small .star-small {
-    display: inline-block;
-  }
-
-  .rating-stars-small .star-small.filled {
-    color: oklch(43% 0.17 12.15);
-  }
-
-  .rating-stars-small .star-small.empty {
-    color: #e5e5e5;
-  }
-
-  /* Dark Mode */
-  html.dark .tab-button {
-    color: oklch(77% 0.005 298);
-  }
-
-  html.dark .tab-button:hover,
-  html.dark .tab-button.active {
-    color: oklch(92% 0.005 298);
-  }
-
-  html.dark .tab-button.active::after {
-    background: oklch(92% 0.005 298);
-  }
-
-  html.dark .book-card-title {
-    color: oklch(92% 0.005 298);
-  }
-
-  html.dark .book-card-link:hover .book-card-title {
-    color: oklch(92% 0.005 298);
-  }
-
-  html.dark .book-card-author {
-    color: oklch(77% 0.005 298);
-  }
-
-  html.dark .book-cover-placeholder {
-    background: oklch(40% 0.005 298 / 0.2);
-  }
-
-  html.dark .placeholder-text {
-    color: oklch(77% 0.005 298);
-  }
-
-  html.dark .progress-bar-bg {
-    background: oklch(40% 0.005 298 / 0.2);
-  }
-
-  html.dark .progress-bar-fill {
-    background: oklch(92% 0.005 298);
-  }
-
-  html.dark .progress-text {
-    color: oklch(77% 0.005 298);
-  }
-
-  html.dark .rating-stars-small .star-small.filled {
-    color: oklch(92% 0.005 298);
-  }
-
-  html.dark .rating-stars-small .star-small.empty {
-    color: oklch(40% 0.005 298 / 0.2);
-  }
-
-  @media (max-width: 768px) {
-    .book-card-link {
-      gap: 1rem;
-    }
-
-    .book-cover-wrapper {
-      width: 100px;
-      height: 140px;
-    }
-
-    .book-card-title {
-      font-size: 1rem;
-    }
-
-    .book-card-author {
-      font-size: 0.8125rem;
-    }
-
-    .status-tabs {
-      gap: 1rem;
-      overflow-x: auto;
-    }
-
-    .tab-button {
-      font-size: 0.75rem;
-      white-space: nowrap;
-    }
-  }
-</style>

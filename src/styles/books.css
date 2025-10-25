@@ -1,0 +1,684 @@
+/* =============================================================================
+   BOOKS STYLING MODULE
+   Centralized styles for book listing and detail pages
+   Uses UnoCSS design tokens: --un-preset-theme-colors-primary/secondary/background
+   ============================================================================= */
+
+/* Arabic Font Overrides
+   ========================================================================== */
+/* Override global :lang(ar) font rules to use Amiri (serif) instead of Gulzar (decorative) for book pages */
+:lang(ar) .book-list-card-title,
+:lang(ar) .book-detail-title,
+:lang(ar) .book-section-title {
+  font-family: 'Amiri', 'Noto Serif Arabic', 'Times New Roman', serif !important;
+}
+
+:lang(ar) .book-list-card-author,
+:lang(ar) .book-list-progress-text,
+:lang(ar) .books-tab-button,
+:lang(ar) .book-detail-author,
+:lang(ar) .book-meta-label,
+:lang(ar) .book-meta-value,
+:lang(ar) .book-detail-rating-label,
+:lang(ar) .book-detail-rating-date,
+:lang(ar) .book-detail-description,
+:lang(ar) .book-detail-progress-title,
+:lang(ar) .book-detail-progress-percentage,
+:lang(ar) .book-detail-progress-detail,
+:lang(ar) .book-back-link,
+:lang(ar) .book-review-content,
+:lang(ar) .book-quote-item,
+:lang(ar) .book-timeline-note,
+:lang(ar) .book-timeline-date,
+:lang(ar) .book-tag-link {
+  font-family: 'Amiri', 'Noto Serif Arabic', 'Times New Roman', serif !important;
+}
+
+/* Book Listing Page Styles
+   ========================================================================== */
+
+/* Status Tabs */
+.books-status-tabs {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0;
+}
+
+.books-tab-button {
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #999;
+  padding: 1rem 0;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.books-tab-button:hover {
+  color: oklch(43% 0.17 12.15);
+}
+
+.books-tab-button.active {
+  color: oklch(43% 0.17 12.15);
+}
+
+.books-tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: oklch(43% 0.17 12.15);
+}
+
+/* Books Container */
+.books-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.book-list-card {
+  display: none;
+}
+
+.book-list-card[data-status="reading"] {
+  display: flex;
+}
+
+.book-list-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  align-items: flex-start;
+}
+
+/* Book Cover in List */
+.book-list-cover-wrapper {
+  width: 120px;
+  height: 160px;
+  flex-shrink: 0;
+  background: #e5e5e5;
+  overflow: hidden;
+}
+
+.book-list-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.book-list-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.book-list-placeholder-text {
+  font-size: 0.75rem;
+  color: #999;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Book Info in List */
+.book-list-info {
+  flex: 1;
+  padding: 0;
+}
+
+.book-list-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+  transition: color 0.2s;
+}
+
+.book-list-card-link:hover .book-list-card-title {
+  color: oklch(43% 0.17 12.15);
+}
+
+.book-list-card-author {
+  font-size: 0.875rem;
+  color: #999;
+  font-style: italic;
+  margin: 0 0 1rem 0;
+}
+
+/* Progress Bar in List */
+.book-list-progress-section {
+  margin-top: 1rem;
+}
+
+.book-list-progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.book-list-progress-bg {
+  flex: 1;
+  height: 4px;
+  background: #e5e5e5;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.book-list-progress-fill {
+  height: 100%;
+  background: oklch(43% 0.17 12.15);
+  transition: width 0.3s ease;
+}
+
+.book-list-progress-text {
+  font-size: 0.75rem;
+  color: #999;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+/* Rating Stars in List */
+.book-list-rating-section {
+  margin-top: 0.75rem;
+}
+
+.book-list-rating-stars {
+  font-size: 0.875rem;
+  letter-spacing: 0.1rem;
+}
+
+.book-list-star-filled {
+  color: oklch(43% 0.17 12.15);
+}
+
+.book-list-star-empty {
+  color: #e5e5e5;
+}
+
+/* Dark Mode for List */
+html.dark .book-list-card-title {
+  color: oklch(92% 0.005 298);
+}
+
+html.dark .book-list-card-link:hover .book-list-card-title {
+  color: oklch(92% 0.005 298);
+}
+
+html.dark .book-list-card-author,
+html.dark .book-list-progress-text {
+  color: oklch(77% 0.005 298);
+}
+
+html.dark .book-list-progress-bg,
+html.dark .book-list-cover-placeholder {
+  background: oklch(40% 0.005 298 / 0.2);
+}
+
+html.dark .book-list-placeholder-text {
+  color: oklch(77% 0.005 298);
+}
+
+html.dark .book-list-progress-fill {
+  background: oklch(92% 0.005 298);
+}
+
+html.dark .book-list-star-filled {
+  color: oklch(92% 0.005 298);
+}
+
+html.dark .book-list-star-empty {
+  color: oklch(40% 0.005 298 / 0.2);
+}
+
+html.dark .books-tab-button {
+  color: oklch(77% 0.005 298);
+}
+
+html.dark .books-tab-button:hover,
+html.dark .books-tab-button.active {
+  color: oklch(92% 0.005 298);
+}
+
+html.dark .books-tab-button.active::after {
+  background: oklch(92% 0.005 298);
+}
+
+
+/* Book Detail Page Styles
+   ========================================================================== */
+
+.book-detail-container {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+/* Back Link */
+.book-back-link {
+  display: inline-block;
+  margin-bottom: 2.5rem;
+  font-size: 0.875rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.6;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.book-back-link:hover {
+  color: oklch(var(--un-preset-theme-colors-primary));
+  opacity: 1;
+}
+
+/* Book Header Section */
+.book-header-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 2.5rem;
+  margin-bottom: 3.75rem;
+}
+
+.book-detail-cover-container {
+  width: 180px;
+}
+
+.book-detail-cover {
+  width: 100%;
+  height: 270px;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+
+.book-detail-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-detail-cover-placeholder {
+  background: linear-gradient(135deg, oklch(var(--un-preset-theme-colors-primary)) 0%, #6a1f32 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 1.25rem;
+  line-height: 1.3;
+}
+
+.book-detail-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.book-detail-title {
+  font-size: 2.625rem;
+  color: oklch(var(--un-preset-theme-colors-primary));
+  font-weight: normal;
+  font-style: italic;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.book-detail-author {
+  font-size: 1.25rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.7;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+/* Metadata Grid */
+.book-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid oklch(var(--un-preset-theme-colors-secondary) / 0.1);
+}
+
+.book-meta-item {
+  text-align: left;
+}
+
+[dir="rtl"] .book-meta-item {
+  text-align: right;
+}
+
+.book-meta-label {
+  font-size: 0.6875rem;
+  color: oklch(var(--un-preset-theme-colors-primary));
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.375rem;
+}
+
+.book-meta-value {
+  font-size: 0.8rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.7;
+}
+
+.book-meta-value.status-reading {
+  color: #f57c00;
+}
+
+.book-meta-value.status-finished {
+  color: #4caf50;
+}
+
+.book-meta-value.status-want-to-read {
+  color: #2196f3;
+}
+
+/* Progress Section */
+.book-detail-progress-section {
+  background: transparent;
+  padding: 2.5rem 0;
+  margin: 2.5rem 0;
+  border: none;
+}
+
+.book-detail-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.25rem;
+}
+
+.book-detail-progress-title {
+  color: oklch(43% 0.17 12.15);
+  font-weight: normal;
+}
+
+.book-detail-progress-percentage {
+  color: oklch(43% 0.17 12.15);
+  font-weight: normal;
+}
+
+.book-detail-progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: #e5e5e5;
+  margin-bottom: 1rem;
+  position: relative;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.book-detail-progress-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: oklch(43% 0.17 12.15);
+  transition: width 0.3s ease;
+  border-radius: 0;
+}
+
+[dir="rtl"] .book-detail-progress-bar-fill {
+  left: auto;
+  right: 0;
+}
+
+.book-detail-progress-detail {
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.6;
+}
+
+/* Rating Section */
+.book-detail-rating-section {
+  text-align: center !important;
+  padding: 2.5rem 2rem;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  margin: 2.5rem 0;
+}
+
+.book-detail-rating-stars {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.15rem;
+  text-align: center !important;
+}
+
+.book-detail-rating-stars .star {
+  display: inline-block;
+}
+
+.book-detail-rating-stars .star.filled {
+  color: oklch(43% 0.17 12.15);
+}
+
+.book-detail-rating-stars .star.empty {
+  color: #e5e5e5;
+}
+
+.book-detail-rating-label {
+  font-size: 0.875rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.6;
+  text-align: center !important;
+}
+
+.book-detail-rating-date {
+  font-size: 0.875rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.5;
+  margin-top: 0.5rem;
+  font-style: italic;
+  text-align: center !important;
+}
+
+/* Section Titles */
+.book-section-title {
+  font-size: 1.5rem;
+  color: oklch(var(--un-preset-theme-colors-primary));
+  font-weight: normal;
+  margin: 3.75rem 0 1.875rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid oklch(var(--un-preset-theme-colors-secondary) / 0.1);
+}
+
+/* Review Content */
+.book-review-content {
+  font-size: 1.0625rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.85;
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+}
+
+/* Quotes */
+.book-quotes-section {
+  margin: 2.5rem 0;
+}
+
+.book-quote-item {
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  background: oklch(var(--un-preset-theme-colors-secondary) / 0.03);
+  border-left: 3px solid oklch(var(--un-preset-theme-colors-primary));
+  font-style: italic;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.75;
+  line-height: 1.8;
+  font-size: 1.0625rem;
+}
+
+[dir="rtl"] .book-quote-item {
+  border-left: none;
+  border-right: 3px solid oklch(var(--un-preset-theme-colors-primary));
+}
+
+.book-quote-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Timeline */
+.book-timeline-section {
+  margin: 2.5rem 0;
+}
+
+.book-timeline-item {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid oklch(var(--un-preset-theme-colors-secondary) / 0.1);
+}
+
+.book-timeline-item:last-child {
+  border-bottom: none;
+}
+
+.book-timeline-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.book-timeline-note {
+  font-size: 0.9375rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.8;
+  flex: 1;
+}
+
+.book-timeline-date {
+  font-size: 0.8125rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.5;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+/* Tags */
+.book-tags-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 2.5rem 0;
+}
+
+.book-tag-link {
+  font-size: 0.8125rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  opacity: 0.6;
+  padding: 0.375rem 1rem;
+  background: oklch(var(--un-preset-theme-colors-secondary) / 0.04);
+  border-radius: 1rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.book-tag-link:hover {
+  opacity: 0.8;
+  background: oklch(var(--un-preset-theme-colors-secondary) / 0.08);
+  color: oklch(var(--un-preset-theme-colors-primary));
+}
+
+/* Dark Mode */
+html.dark .book-detail-progress-title,
+html.dark .book-detail-progress-percentage {
+  color: oklch(92% 0.005 298);
+}
+
+html.dark .book-detail-progress-bar-fill {
+  background: oklch(92% 0.005 298);
+}
+
+html.dark .book-detail-progress-bar-container {
+  background: oklch(40% 0.005 298 / 0.2);
+}
+
+html.dark .book-detail-progress-detail {
+  color: oklch(77% 0.005 298);
+}
+
+html.dark .book-detail-rating-stars .star.filled {
+  color: oklch(92% 0.005 298);
+}
+
+html.dark .book-detail-rating-stars .star.empty {
+  color: oklch(40% 0.005 298 / 0.2);
+}
+
+html.dark .book-detail-rating-label,
+html.dark .book-detail-rating-date {
+  color: oklch(77% 0.005 298);
+}
+
+/* Responsive Design
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .book-header-grid {
+    grid-template-columns: 140px 1fr;
+    gap: 1.5rem;
+  }
+
+  .book-detail-cover-container {
+    width: 140px;
+  }
+
+  .book-detail-cover {
+    height: 210px;
+  }
+
+  .book-detail-title {
+    font-size: 2rem;
+  }
+
+  .book-meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .book-section-title {
+    font-size: 1.25rem;
+  }
+
+  .book-timeline-content {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .book-detail-rating-stars {
+    font-size: 1.5rem;
+    letter-spacing: 0.1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .book-header-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .book-detail-cover-container {
+    width: 100%;
+    max-width: 220px;
+    margin: 0 auto;
+  }
+
+  .book-detail-cover {
+    width: 100%;
+    height: 330px;
+  }
+}

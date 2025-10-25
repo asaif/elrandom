@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content'
 import Layout from '@/layouts/Layout.astro'
 import { defaultLocale, moreLocales } from '@/config'
+import '@/styles/books.css'
 
 export async function getStaticPaths() {
   const books = await getCollection('books')
@@ -25,7 +26,6 @@ export async function getStaticPaths() {
     })
   })
 
-  console.log('Total book paths generated:', paths.length)
   return paths
 }
 
@@ -65,63 +65,69 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
 ---
 
 <Layout>
-  <div class="book-detail-page" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+  <div class="book-detail-container" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
     <!-- Back Link -->
-    <a href={`/${lang === defaultLocale ? '' : lang + '/'}books/`} class="back-link">
+    <a href={`/${lang === defaultLocale ? '' : lang + '/'}books/`} class="book-back-link font-serif">
       ← {lang === 'ar' ? 'العودة إلى الكتب' : 'Back to Reading'}
     </a>
 
     <!-- Book Header with Cover -->
-    <div class="book-header-section">
-      <div class="book-cover-container">
+    <div class="book-header-grid">
+      <div class="book-detail-cover-container">
         {book.data.coverImage ? (
-          <div class="book-cover">
+          <div class="book-detail-cover">
             <img src={book.data.coverImage} alt={book.data.title} />
           </div>
         ) : (
-          <div class="book-cover book-cover-placeholder">
+          <div class="book-detail-cover book-detail-cover-placeholder">
             <span>{book.data.title}</span>
           </div>
         )}
       </div>
 
-      <div class="book-info-section">
-        <h1 class="book-title">{book.data.title}</h1>
-        <p class="book-author">{book.data.author}</p>
+      <div class="book-detail-info">
+        <h1 class="book-detail-title font-navbar">{book.data.title}</h1>
+        <p class="book-detail-author font-serif">{book.data.author}</p>
 
-        <div class="book-meta-grid">
-          <div class="meta-item">
-            <div class="meta-label">Status</div>
-            <div class={`meta-value status-${book.data.status}`}>
-              {book.data.status.replace('-', ' ')}
+        <div class="book-meta-grid font-serif">
+          <div class="book-meta-item">
+            <div class="book-meta-label">{lang === 'ar' ? 'الحالة' : 'Status'}</div>
+            <div class={`book-meta-value status-${book.data.status}`}>
+              {lang === 'ar'
+                ? (book.data.status === 'reading' ? 'أقرأ' :
+                   book.data.status === 'finished' ? 'قرأته' :
+                   'أنوي قرائته')
+                : book.data.status.replace('-', ' ')}
             </div>
           </div>
           {book.data.totalPages && (
-            <div class="meta-item">
-              <div class="meta-label">Pages</div>
-              <div class="meta-value">{book.data.totalPages}</div>
+            <div class="book-meta-item">
+              <div class="book-meta-label">{lang === 'ar' ? 'الصفحات' : 'Pages'}</div>
+              <div class="book-meta-value">{book.data.totalPages}</div>
             </div>
           )}
           {displayDate && (
-            <div class="meta-item">
-              <div class="meta-label">
-                {book.data.status === 'finished' ? 'Finished' : 'Started'}
+            <div class="book-meta-item">
+              <div class="book-meta-label">
+                {lang === 'ar'
+                  ? (book.data.status === 'finished' ? 'انتهى في' : 'بدأت في')
+                  : (book.data.status === 'finished' ? 'Finished' : 'Started')}
               </div>
-              <div class="meta-value">
+              <div class="book-meta-value">
                 {formatDate(displayDate)}
               </div>
             </div>
           )}
           {book.data.status === 'finished' && readingTime && (
-            <div class="meta-item">
-              <div class="meta-label">Read in</div>
-              <div class="meta-value">{readingTime}</div>
+            <div class="book-meta-item">
+              <div class="book-meta-label">{lang === 'ar' ? 'قرأت في' : 'Read in'}</div>
+              <div class="book-meta-value">{readingTime}</div>
             </div>
           )}
           {book.data.genre && (
-            <div class="meta-item">
-              <div class="meta-label">Genre</div>
-              <div class="meta-value">{book.data.genre}</div>
+            <div class="book-meta-item">
+              <div class="book-meta-label">{lang === 'ar' ? 'النوع' : 'Genre'}</div>
+              <div class="book-meta-value">{book.data.genre}</div>
             </div>
           )}
         </div>
@@ -130,54 +136,65 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
 
     <!-- Reading Progress -->
     {book.data.status === 'reading' && book.data.progress && (
-      <div class="progress-section">
-        <div class="progress-header">
-          <h2 class="progress-title">Reading Progress</h2>
-          <div class="progress-percentage">{book.data.progress}%</div>
+      <div class="book-detail-progress-section">
+        <div class="book-detail-progress-header">
+          <h2 class="book-detail-progress-title font-navbar">{lang === 'ar' ? 'تقدم القراءة' : 'Reading Progress'}</h2>
+          <div class="book-detail-progress-percentage font-serif">{book.data.progress}%</div>
         </div>
-        <div class="progress-bar-container">
-          <div class="progress-bar-fill" style={`width: ${book.data.progress}%`}></div>
+        <div class="book-detail-progress-bar-container">
+          <div class="book-detail-progress-bar-fill" style={`width: ${book.data.progress}%`}></div>
         </div>
-        <div class="progress-detail">
-          Page {book.data.currentPage} of {book.data.totalPages}
-          {pagesRemaining > 0 && ` · ${pagesRemaining} pages remaining`}
+        <div class="book-detail-progress-detail font-serif">
+          {lang === 'ar'
+            ? `صفحة ${book.data.currentPage} من ${book.data.totalPages}${pagesRemaining > 0 ? ` · ${pagesRemaining} صفحات متبقية` : ''}`
+            : `Page ${book.data.currentPage} of ${book.data.totalPages}${pagesRemaining > 0 ? ` · ${pagesRemaining} pages remaining` : ''}`}
         </div>
       </div>
     )}
 
     <!-- Rating -->
     {book.data.status === 'finished' && book.data.rating && (
-      <div class="rating-section">
-        <div class="rating-stars">
+      <div class="book-detail-rating-section">
+        <div class="book-detail-rating-stars">
           {[1, 2, 3, 4, 5].map((star) => (
             <span class={star <= numericRating ? 'star filled' : 'star empty'}>★</span>
           ))}
         </div>
-        <div class="rating-label">My Rating</div>
+        <div class="book-detail-rating-label font-serif">{lang === 'ar' ? 'تقييمي' : 'My Rating'}</div>
         {book.data.dateFinished && (
-          <div class="rating-date">Finished {formatDate(book.data.dateFinished)}</div>
+          <div class="book-detail-rating-date font-serif">
+            {lang === 'ar' ? `انتهى في ${formatDate(book.data.dateFinished)}` : `Finished ${formatDate(book.data.dateFinished)}`}
+          </div>
         )}
       </div>
     )}
 
     <!-- My Thoughts -->
-    <h2 class="section-title">
-      {book.data.status === 'reading' ? 'My Thoughts So Far' :
-       book.data.status === 'finished' ? 'My Review' :
-       'Why I Want to Read This'}
+    <h2 class="book-section-title font-navbar">
+      {lang === 'ar'
+        ? (book.data.status === 'reading' ? 'أفكاري حتى الآن' :
+           book.data.status === 'finished' ? 'مراجعتي' :
+           'لماذا أريد قراءة هذا')
+        : (book.data.status === 'reading' ? 'My Thoughts So Far' :
+           book.data.status === 'finished' ? 'My Review' :
+           'Why I Want to Read This')}
     </h2>
-    <div class="review-content heti">
+    <div class="book-review-content heti font-serif">
       <Content />
     </div>
 
     <!-- Quotes -->
     {book.data.quote && (
       <>
-        <h2 class="section-title">Favorite Quote{book.data.quotes?.length ? 's' : ''}</h2>
-        <div class="quotes-section">
-          <div class="quote-item">"{book.data.quote}"</div>
+        <h2 class="book-section-title font-navbar">
+          {lang === 'ar'
+            ? (book.data.quotes?.length ? 'اقتباساتي المفضلة' : 'اقتباسي المفضل')
+            : `Favorite Quote${book.data.quotes?.length ? 's' : ''}`}
+        </h2>
+        <div class="book-quotes-section font-serif">
+          <div class="book-quote-item">"{book.data.quote}"</div>
           {book.data.quotes?.map((quote: string) => (
-            <div class="quote-item">"{quote}"</div>
+            <div class="book-quote-item">"{quote}"</div>
           ))}
         </div>
       </>
@@ -186,13 +203,13 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
     <!-- Timeline -->
     {book.data.timeline && book.data.timeline.length > 0 && (
       <>
-        <h2 class="section-title">Reading Timeline</h2>
-        <div class="timeline-section">
+        <h2 class="book-section-title font-navbar">{lang === 'ar' ? 'الجدول الزمني للقراءة' : 'Reading Timeline'}</h2>
+        <div class="book-timeline-section font-serif">
           {book.data.timeline.map((entry: { date: Date; note: string }) => (
-            <div class="timeline-item">
-              <div class="timeline-content">
-                <div class="timeline-note">{entry.note}</div>
-                <div class="timeline-date">{formatDate(entry.date)}</div>
+            <div class="book-timeline-item">
+              <div class="book-timeline-content">
+                <div class="book-timeline-note">{entry.note}</div>
+                <div class="book-timeline-date">{formatDate(entry.date)}</div>
               </div>
             </div>
           ))}
@@ -203,12 +220,12 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
     <!-- Tags -->
     {book.data.tags && book.data.tags.length > 0 && (
       <>
-        <h2 class="section-title">Tags & Categories</h2>
-        <div class="tags-section">
+        <h2 class="book-section-title font-navbar">{lang === 'ar' ? 'الوسوم والفئات' : 'Tags & Categories'}</h2>
+        <div class="book-tags-section font-serif">
           {book.data.tags.map((tag: string) => (
             <a
               href={`/${lang === defaultLocale ? '' : lang + '/'}tags/${tag}/`}
-              class="tag-link"
+              class="book-tag-link"
             >
               {tag}
             </a>
@@ -218,435 +235,3 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
     )}
   </div>
 </Layout>
-
-<style>
-  .book-detail-page {
-    max-width: 56rem;
-    margin: 0 auto;
-  }
-
-  .back-link {
-    display: inline-block;
-    margin-bottom: 2.5rem;
-    font-size: 0.875rem;
-    color: var(--c-secondary);
-    opacity: 0.6;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .back-link:hover {
-    color: var(--c-primary);
-    opacity: 1;
-  }
-
-  .book-header-section {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 2.5rem;
-    margin-bottom: 3.75rem;
-  }
-
-  .book-cover-container {
-    width: 180px;
-  }
-
-  .book-cover {
-    width: 100%;
-    height: 270px;
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    overflow: hidden;
-  }
-
-  .book-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .book-cover-placeholder {
-    background: linear-gradient(135deg, var(--c-primary) 0%, #6a1f32 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    padding: 1.25rem;
-    line-height: 1.3;
-  }
-
-  .book-info-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .book-title {
-    font-size: 2.625rem;
-    color: var(--c-primary);
-    font-weight: normal;
-    font-style: italic;
-    margin-bottom: 0.75rem;
-    line-height: 1.2;
-  }
-
-  .book-author {
-    font-size: 1.25rem;
-    color: var(--c-secondary);
-    opacity: 0.7;
-    font-style: italic;
-    margin-bottom: 1.5rem;
-  }
-
-  .book-meta-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1.25rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--c-secondary);
-    border-top-opacity: 0.1;
-  }
-
-  .meta-item {
-    text-align: left;
-  }
-
-  [dir="rtl"] .meta-item {
-    text-align: right;
-  }
-
-  .meta-label {
-    font-size: 0.6875rem;
-    color: var(--c-secondary);
-    opacity: 0.5;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.375rem;
-  }
-
-  .meta-value {
-    font-size: 1rem;
-    color: var(--c-primary);
-  }
-
-  .meta-value.status-reading {
-    color: #f57c00;
-  }
-
-  .meta-value.status-finished {
-    color: #4caf50;
-  }
-
-  .meta-value.status-want-to-read {
-    color: #2196f3;
-  }
-
-  .progress-section {
-    background: transparent;
-    padding: 2.5rem 0;
-    margin: 2.5rem 0;
-    border: none;
-  }
-
-  .progress-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 1.25rem;
-  }
-
-  .progress-title {
-    font-size: 1.875rem;
-    color: oklch(43% 0.17 12.15);
-    font-style: italic;
-    font-weight: normal;
-  }
-
-  .progress-percentage {
-    font-size: 2.5rem;
-    color: oklch(43% 0.17 12.15);
-    font-weight: normal;
-  }
-
-  .progress-bar-container {
-    width: 100%;
-    height: 8px;
-    background: #e5e5e5;
-    margin-bottom: 1rem;
-    position: relative;
-    border-radius: 0;
-    overflow: visible;
-  }
-
-  .progress-bar-fill {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    background: oklch(43% 0.17 12.15);
-    transition: width 0.3s ease;
-    border-radius: 0;
-  }
-
-  [dir="rtl"] .progress-bar-fill {
-    left: auto;
-    right: 0;
-  }
-
-  .progress-detail {
-    font-size: 1rem;
-    color: oklch(40% 0.005 298);
-    opacity: 0.6;
-  }
-
-  html.dark .progress-title {
-    color: oklch(92% 0.005 298);
-  }
-
-  html.dark .progress-percentage {
-    color: oklch(92% 0.005 298);
-  }
-
-  html.dark .progress-bar-fill {
-    background: oklch(92% 0.005 298);
-  }
-
-  html.dark .progress-bar-container {
-    background: oklch(40% 0.005 298 / 0.2);
-  }
-
-  html.dark .progress-detail {
-    color: oklch(77% 0.005 298);
-  }
-
-  .rating-section {
-    text-align: center;
-    padding: 2.5rem 2rem;
-    background: transparent;
-    border-radius: 0;
-    border: none;
-    margin: 2.5rem 0;
-  }
-
-  .rating-stars {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    letter-spacing: 0.15rem;
-  }
-
-  .rating-stars .star {
-    display: inline-block;
-  }
-
-  @media (max-width: 640px) {
-    .rating-stars {
-      font-size: 1.5rem;
-      letter-spacing: 0.1rem;
-    }
-  }
-
-  .rating-stars .star.filled {
-    color: oklch(43% 0.17 12.15);
-  }
-
-  .rating-stars .star.empty {
-    color: #e5e5e5;
-  }
-
-  .rating-label {
-    font-size: 0.875rem;
-    color: oklch(40% 0.005 298);
-    opacity: 0.6;
-  }
-
-  .rating-date {
-    font-size: 0.875rem;
-    color: oklch(40% 0.005 298);
-    opacity: 0.5;
-    margin-top: 0.5rem;
-    font-style: italic;
-  }
-
-  html.dark .rating-stars .star.filled {
-    color: oklch(92% 0.005 298);
-  }
-
-  html.dark .rating-stars .star.empty {
-    color: oklch(40% 0.005 298 / 0.2);
-  }
-
-  html.dark .rating-label {
-    color: oklch(77% 0.005 298);
-  }
-
-  html.dark .rating-date {
-    color: oklch(77% 0.005 298);
-  }
-
-  .section-title {
-    font-size: 1.5rem;
-    color: var(--c-primary);
-    font-style: italic;
-    font-weight: normal;
-    margin: 3.75rem 0 1.875rem 0;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--c-secondary);
-    border-bottom-opacity: 0.1;
-  }
-
-  .review-content {
-    font-size: 1.0625rem;
-    color: var(--c-secondary);
-    opacity: 0.85;
-    line-height: 1.8;
-    margin-bottom: 2.5rem;
-  }
-
-  .quotes-section {
-    margin: 2.5rem 0;
-  }
-
-  .quote-item {
-    padding: 1.5rem 2rem;
-    margin-bottom: 1.5rem;
-    background: var(--c-secondary);
-    background-opacity: 0.03;
-    border-left: 3px solid var(--c-primary);
-    font-style: italic;
-    color: var(--c-secondary);
-    opacity: 0.75;
-    line-height: 1.8;
-    font-size: 1.0625rem;
-  }
-
-  [dir="rtl"] .quote-item {
-    border-left: none;
-    border-right: 3px solid var(--c-primary);
-  }
-
-  .quote-item:last-child {
-    margin-bottom: 0;
-  }
-
-  .timeline-section {
-    margin: 2.5rem 0;
-  }
-
-  .timeline-item {
-    padding: 1.25rem 0;
-    border-bottom: 1px solid var(--c-secondary);
-    border-bottom-opacity: 0.1;
-  }
-
-  .timeline-item:last-child {
-    border-bottom: none;
-  }
-
-  .timeline-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .timeline-note {
-    font-size: 0.9375rem;
-    color: var(--c-secondary);
-    opacity: 0.8;
-    flex: 1;
-  }
-
-  .timeline-date {
-    font-size: 0.8125rem;
-    color: var(--c-secondary);
-    opacity: 0.5;
-    font-style: italic;
-    white-space: nowrap;
-  }
-
-  .tags-section {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin: 2.5rem 0;
-  }
-
-  .tag-link {
-    font-size: 0.8125rem;
-    color: var(--c-secondary);
-    opacity: 0.6;
-    padding: 0.375rem 1rem;
-    background: var(--c-secondary);
-    background-opacity: 0.04;
-    border-radius: 1rem;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .tag-link:hover {
-    opacity: 0.8;
-    background-opacity: 0.08;
-    color: var(--c-primary);
-  }
-
-  [dir="rtl"] .book-header-section {
-    grid-template-columns: 1fr 180px;
-  }
-
-  @media (max-width: 768px) {
-    .book-header-section {
-      grid-template-columns: 140px 1fr;
-      gap: 1.5rem;
-    }
-
-    .book-cover-container {
-      width: 140px;
-    }
-
-    .book-cover {
-      height: 210px;
-    }
-
-    .book-title {
-      font-size: 2rem;
-    }
-
-    .book-meta-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-    }
-
-    .timeline-content {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .book-header-section {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .book-cover-container {
-      width: 100%;
-      max-width: 220px;
-      margin: 0 auto;
-    }
-
-    .book-cover {
-      width: 100%;
-      height: 330px;
-    }
-
-    [dir="rtl"] .book-header-section {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
