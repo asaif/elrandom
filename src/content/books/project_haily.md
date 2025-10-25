@@ -5,7 +5,7 @@ status: "want-to-read"
 dateAdded: 2024-09-08
 totalPages: 476
 genre: "Science Fiction"
-coverImage: "https://m.media-amazon.com/images/I/91pW+4g71RL._AC_UF1000,1000_QL80_.jpg"
+coverImage: "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1597695864i/54493401.jpg"
 isbn: "9780593135204"
 language: "en"
 year: 2021

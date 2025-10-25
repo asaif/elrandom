@@ -5,7 +5,7 @@ status: "want-to-read"
 dateAdded: 2024-09-11
 totalPages: 662
 genre: "Fantasy"
-coverImage: "https://m.media-amazon.com/images/I/81gC1xz9fQL._AC_UF1000,1000_QL80_.jpg"
+coverImage: "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1704917687i/186074.jpg"
 isbn: "9780756404741"
 language: "en"
 year: 2007

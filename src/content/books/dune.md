@@ -5,7 +5,7 @@ status: "want-to-read"
 dateAdded: 2024-09-05
 totalPages: 412
 genre: "Science Fiction"
-coverImage: "https://m.media-amazon.com/images/I/91U4vy5RzYL._AC_UF1000,1000_QL80_.jpg"
+coverImage: "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1555447414i/44767458.jpg"
 isbn: "9780441172719"
 language: "en"
 year: 1965

@@ -42,16 +42,20 @@ const currentYear = new Date().getFullYear()
 const stats = {
   booksRead: allBooks.filter(b => b.data.status === 'finished').length,
   currentlyReading: allBooks.filter(b => b.data.status === 'reading').length,
-  pagesThisYear: allBooks
-    .filter(b => b.data.year === currentYear)
-    .reduce((sum, book) => {
-      if (book.data.status === 'finished') {
+  pagesThisYear: allBooks.reduce((sum, book) => {
+    // For finished books, check if finished this year
+    if (book.data.status === 'finished' && book.data.dateFinished) {
+      const finishedYear = book.data.dateFinished.getFullYear()
+      if (finishedYear === currentYear) {
         return sum + (book.data.totalPages || 0)
-      } else if (book.data.status === 'reading') {
-        return sum + (book.data.currentPage || 0)
       }
-      return sum
-    }, 0),
+    }
+    // For currently reading books, count current progress
+    else if (book.data.status === 'reading') {
+      return sum + (book.data.currentPage || 0)
+    }
+    return sum
+  }, 0),
 }
 ---
 
@@ -70,9 +74,19 @@ const stats = {
 
     <!-- Reading Stats -->
     <div class="mt-4 text-3.2 c-secondary">
-      <span class="font-medium">{stats.booksRead}</span> books read this year ·
-      <span class="font-medium">{stats.currentlyReading}</span> currently reading ·
-      <span class="font-medium">{stats.pagesThisYear.toLocaleString()}</span> pages
+      {lang === 'ar' ? (
+        <>
+          <span class="font-medium">{stats.booksRead}</span> كتاب قرأته هذا العام ·
+          <span class="font-medium">{stats.currentlyReading}</span> أقرأ حالياً ·
+          <span class="font-medium">{stats.pagesThisYear.toLocaleString()}</span> صفحة
+        </>
+      ) : (
+        <>
+          <span class="font-medium">{stats.booksRead}</span> books read this year ·
+          <span class="font-medium">{stats.currentlyReading}</span> currently reading ·
+          <span class="font-medium">{stats.pagesThisYear.toLocaleString()}</span> pages
+        </>
+      )}
     </div>
   </div>
 
