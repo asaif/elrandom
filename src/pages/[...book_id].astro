@@ -205,11 +205,20 @@ const numericRating = book.data.rating ? getNumericRating(book.data.rating) : 0
       <>
         <h2 class="book-section-title font-navbar">{lang === 'ar' ? 'الجدول الزمني للقراءة' : 'Reading Timeline'}</h2>
         <div class="book-timeline-section font-serif">
-          {book.data.timeline.map((entry: { date: Date; note: string }) => (
+          {book.data.timeline.map((entry: { date: Date; note: string }, index: number) => (
             <div class="book-timeline-item">
+              <!-- Timeline Column with Dot and Line -->
+              <div class="book-timeline-column">
+                <div class="book-timeline-dot"></div>
+                {index < book.data.timeline!.length - 1 && (
+                  <div class="book-timeline-line"></div>
+                )}
+              </div>
+
+              <!-- Timeline Content -->
               <div class="book-timeline-content">
-                <div class="book-timeline-note">{entry.note}</div>
                 <div class="book-timeline-date">{formatDate(entry.date)}</div>
+                <div class="book-timeline-note">{entry.note}</div>
               </div>
             </div>
           ))}

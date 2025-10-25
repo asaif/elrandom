@@ -1,11 +1,11 @@
 ---
 title: "الأيام"
 author: "طه حسين"
-status: "finished"
+status: "reading"
 dateStarted: 2024-10-15
-dateFinished: 2024-11-15
-dateAdded: 2024-10-15
-rating: "★★★★★"
+dateAdded: 2024-12-01
+progress: 54
+currentPage: 120
 totalPages: 285
 genre: "السيرة الذاتية"
 coverImage: "https://www.neelwafurat.com/images/lb/abookstore/covers/normal/398/398087.jpg"

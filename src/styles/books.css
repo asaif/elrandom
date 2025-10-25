@@ -533,40 +533,87 @@ html.dark .books-tab-button.active::after {
   margin-bottom: 0;
 }
 
-/* Timeline */
+/* Timeline - Archive Style */
 .book-timeline-section {
   margin: 2.5rem 0;
 }
 
 .book-timeline-item {
-  padding: 1.25rem 0;
-  border-bottom: 1px solid oklch(var(--un-preset-theme-colors-secondary) / 0.1);
+  display: flex;
+  margin-bottom: 2rem;
+  position: relative;
 }
 
 .book-timeline-item:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 
-.book-timeline-content {
+/* Timeline Column with Dot and Line */
+.book-timeline-column {
+  position: relative;
+  width: 1rem;
+  flex-shrink: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 1.5rem;
 }
 
-.book-timeline-note {
-  font-size: 0.9375rem;
-  color: oklch(var(--un-preset-theme-colors-secondary));
-  opacity: 0.8;
+[dir="rtl"] .book-timeline-column {
+  margin-right: 0;
+  margin-left: 1.5rem;
+}
+
+.book-timeline-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: oklch(43% 0.17 12.15);
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+html.dark .book-timeline-dot {
+  background: oklch(92% 0.005 298);
+}
+
+.book-timeline-line {
+  position: absolute;
+  width: 1px;
+  background: #e5e5e5;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0.75rem;
+  bottom: -2rem;
+}
+
+html.dark .book-timeline-line {
+  background: oklch(40% 0.005 298 / 0.2);
+}
+
+/* Timeline Content */
+.book-timeline-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .book-timeline-date {
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   color: oklch(var(--un-preset-theme-colors-secondary));
   opacity: 0.5;
   font-style: italic;
-  white-space: nowrap;
+  line-height: 1em;
+}
+
+.book-timeline-note {
+  font-size: 1.125rem;
+  color: oklch(var(--un-preset-theme-colors-secondary));
+  line-height: 1.4em;
+  transition: color 0.2s;
 }
 
 /* Tags */
