@@ -13,17 +13,17 @@ export async function getStaticPaths() {
 
   const paths: PathItem[] = []
 
-  // Default locale
+  // Generate paths for default language
   paths.push({
     params: { books: 'books/' },
     props: { lang: defaultLocale },
   })
 
-  // More locales
-  moreLocales.forEach((lang: string) => {
+  // Generate paths for other languages
+  moreLocales.forEach(locale => {
     paths.push({
-      params: { books: `${lang}/books/` },
-      props: { lang },
+      params: { books: `${locale}/books/` },
+      props: { lang: locale },
     })
   })
 

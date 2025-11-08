@@ -11,17 +11,17 @@ export async function getStaticPaths() {
   books.forEach(book => {
     const bookId = book.id.replace('.md', '').replace('.mdx', '')
 
-    // Generate path for default locale (English): /book/bookId/
+    // Generate path for default language
     paths.push({
       params: { book_id: `book/${bookId}/` },
       props: { book, lang: defaultLocale },
     })
 
-    // Generate paths for other locales (Arabic): /ar/book/bookId/
-    moreLocales.forEach(lang => {
+    // Generate paths for other languages
+    moreLocales.forEach(locale => {
       paths.push({
-        params: { book_id: `${lang}/book/${bookId}/` },
-        props: { book, lang },
+        params: { book_id: `${locale}/book/${bookId}/` },
+        props: { book, lang: locale },
       })
     })
   })
@@ -76,7 +76,7 @@ const progressPercentage = calculateProgress()
 <Layout>
   <div class="book-detail-container" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
     <!-- Back Link -->
-    <a href={`/${lang === defaultLocale ? '' : lang + '/'}books/`} class="book-back-link font-serif">
+    <a href="/books/" class="book-back-link font-serif">
       ← {lang === 'ar' ? 'العودة إلى الكتب' : 'Back to Reading'}
     </a>
 
@@ -242,7 +242,7 @@ const progressPercentage = calculateProgress()
         <div class="book-tags-section font-serif">
           {book.data.tags.map((tag: string) => (
             <a
-              href={`/${lang === defaultLocale ? '' : lang + '/'}tags/${tag}/`}
+              href={`/tags/${tag}/`}
               class="book-tag-link"
             >
               {tag}
