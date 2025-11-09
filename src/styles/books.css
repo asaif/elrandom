@@ -614,12 +614,30 @@ html.dark .book-timeline-line {
   transition: color 0.2s;
 }
 
-/* Tags */
+/* Tags - Shared style for all tag displays */
 .book-tags-section {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   margin: 2.5rem 0;
+}
+
+/* Compact tag section for inline use (e.g., in post lists) */
+.book-tags-section-compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* Tag section with custom top margin for reading page */
+.book-tags-section-reading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 0;
 }
 
 .book-tag-link {
@@ -634,6 +652,12 @@ html.dark .book-timeline-line {
 }
 
 .book-tag-link:hover {
+  opacity: 0.8;
+  background: oklch(var(--un-preset-theme-colors-secondary) / 0.08);
+  color: oklch(var(--un-preset-theme-colors-primary));
+}
+
+.book-tag-link-active {
   opacity: 0.8;
   background: oklch(var(--un-preset-theme-colors-secondary) / 0.08);
   color: oklch(var(--un-preset-theme-colors-primary));

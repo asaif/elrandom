@@ -87,7 +87,7 @@ const yearsArray = Array.from(postsByYear.entries())
               <div class="w-2 h-2 rounded-full bg-primary relative z-10"></div>
               <!-- Line starts AFTER the circle and continues to next section -->
               {(posts.length > 0 || yearIndex < yearsArray.length - 1) && (
-                <div class="absolute w-px timeline-line-year left-1/2 transform -translate-x-1/2" style="background: #e5e5e5;"></div>
+                <div class="absolute w-px timeline-line-year left-1/2 transform -translate-x-1/2 timeline-line"></div>
               )}
             </div>
             
@@ -118,7 +118,7 @@ const yearsArray = Array.from(postsByYear.entries())
                 <div class="relative w-4 flex justify-center pt-1.5">
                   <!-- Line continues only to next post in same year -->
                   {postIndex < posts.length - 1 && (
-                    <div class="absolute w-px timeline-line-post left-1/2 transform -translate-x-1/2 top-0" style="background: #e5e5e5;"></div>
+                    <div class="absolute w-px timeline-line-post left-1/2 transform -translate-x-1/2 top-0 timeline-line"></div>
                   )}
                   <!-- Post Dot -->
                   <div class="w-2 h-2 rounded-full bg-primary relative z-10"></div>
@@ -141,11 +141,11 @@ const yearsArray = Array.from(postsByYear.entries())
 
                   <!-- Tags -->
                   {post.data.tags && post.data.tags.length > 0 && (
-                    <div class="flex gap-1 flex-wrap mt-1">
+                    <div class="book-tags-section-compact">
                       {post.data.tags.slice(0, 3).map(postTag => (
                         <a
                           href={`/${lang === defaultLocale ? '' : lang + '/'}tags/${postTag}/`}
-                          class="inline-block px-2 py-0.4 text-2.2 leading-none c-secondary/50 bg-secondary/4 rounded-full hover:c-secondary/70 hover:bg-secondary/8 transition-all duration-200 ease-out text-decoration-none whitespace-nowrap"
+                          class="book-tag-link"
                         >
                           {postTag}
                         </a>
@@ -189,5 +189,13 @@ const yearsArray = Array.from(postsByYear.entries())
   
   .timeline-line-post {
     height: 104%;
+  }
+  
+  .timeline-line {
+    background: #e5e5e5;
+  }
+  
+  html.dark .timeline-line {
+    background: oklch(40% 0.005 298 / 0.2);
   }
 </style>

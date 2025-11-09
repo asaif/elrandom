@@ -138,8 +138,15 @@ function getReadingTime(startDate?: Date, endDate?: Date): string {
 
                 <!-- Tags -->
                 {book.data.tags && book.data.tags.length > 0 && (
-                  <div class="book-tags">
-                    {book.data.tags.map(tag => `#${tag}`).join(' · ')}
+                  <div class="book-tags-section-reading">
+                    {book.data.tags.map(tag => (
+                      <a
+                        href={`/tags/${tag}/`}
+                        class="book-tag-link"
+                      >
+                        {tag}
+                      </a>
+                    ))}
                   </div>
                 )}
               </article>
@@ -307,13 +314,6 @@ function getReadingTime(startDate?: Date, endDate?: Date): string {
     line-height: 1.7;
   }
 
-  /* Tags - minimal */
-  .book-tags {
-    margin-top: 16px;
-    font-size: 0.55rem; /* text-2.2 equivalent */
-    color: var(--c-secondary);
-    opacity: 0.4;
-  }
 
   /* RTL Support */
   .book-entry.rtl {

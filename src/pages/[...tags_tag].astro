@@ -86,13 +86,24 @@ const yearsArray = sortedYears.map(year => [year, postsByYear.get(year)!] as con
 <Layout supportedLangs={supportedLangs}>
   <!-- Decorative Line -->
   <div class="uno-decorative-line" />
-  
-  <!-- Tag List -->
-  <TagList
-    tags={allTags}
-    currentTag={tag}
-    lang={lang}
-  />
+
+  <!-- Tag Header -->
+  <div class="mb-10">
+    <h1 class="text-6 font-bold c-primary mb-3 font-navbar lg:text-7">
+      {tag}
+    </h1>
+    <p class="text-3.6 c-secondary leading-1.5em lg:text-4">
+      Posts and books related to {tag}
+    </p>
+
+    <!-- Total Count -->
+    <div class="mt-4 text-3.2 c-secondary">
+      <span class="font-medium">{items.length}</span> {items.length === 1 ? 'item' : 'items'}
+      {posts.length > 0 && books.length > 0 && (
+        <span> · <span class="font-medium">{posts.length}</span> {posts.length === 1 ? 'post' : 'posts'} · <span class="font-medium">{books.length}</span> {books.length === 1 ? 'book' : 'books'}</span>
+      )}
+    </div>
+  </div>
 
   <!-- Posts List Grouped by Year with Timeline -->
   {posts.length > 0 ? (
@@ -114,7 +125,7 @@ const yearsArray = sortedYears.map(year => [year, postsByYear.get(year)!] as con
               <div class="w-2 h-2 rounded-full bg-primary relative z-10"></div>
               <!-- Line starts AFTER the circle and continues to next section -->
               {(posts.length > 0 || yearIndex < yearsArray.length - 1) && (
-                <div class="absolute w-px timeline-line-year left-1/2 transform -translate-x-1/2" style="background: #e5e5e5;"></div>
+                <div class="absolute w-px timeline-line-year left-1/2 transform -translate-x-1/2 timeline-line"></div>
               )}
             </div>
             
@@ -145,7 +156,7 @@ const yearsArray = sortedYears.map(year => [year, postsByYear.get(year)!] as con
                 <div class="relative w-4 flex justify-center pt-1.5">
                   <!-- Line continues through all items except the very last one -->
                   {!(postIndex === posts.length - 1 && yearIndex === yearsArray.length - 1) && (
-                    <div class="absolute w-px timeline-line-post left-1/2 transform -translate-x-1/2 top-0" style="background: #e5e5e5;"></div>
+                    <div class="absolute w-px timeline-line-post left-1/2 transform -translate-x-1/2 top-0 timeline-line"></div>
                   )}
                   <!-- Post Dot -->
                   <div class="w-2 h-2 rounded-full bg-primary relative z-10"></div>
@@ -168,11 +179,11 @@ const yearsArray = sortedYears.map(year => [year, postsByYear.get(year)!] as con
 
                   <!-- Tags -->
                   {post.data.tags && post.data.tags.length > 0 && (
-                    <div class="flex gap-1 flex-wrap mt-1">
+                    <div class="book-tags-section-compact">
                       {post.data.tags.map(postTag => (
                         <a
                           href={getTagPath(postTag, lang)}
-                          class="inline-block px-2 py-0.4 text-2.2 leading-none c-secondary/50 bg-secondary/4 rounded-full hover:c-secondary/70 hover:bg-secondary/8 transition-all duration-200 ease-out text-decoration-none whitespace-nowrap"
+                          class="book-tag-link"
                         >
                           {postTag}
                         </a>
@@ -219,11 +230,11 @@ const yearsArray = sortedYears.map(year => [year, postsByYear.get(year)!] as con
                       {book.data.rating && (
                         <div class="text-3.2 c-primary mb-2">{book.data.rating}</div>
                       )}
-                      <div class="flex gap-1 flex-wrap">
+                      <div class="book-tags-section-compact">
                         {book.data.tags?.map(bookTag => (
                           <a
                             href={`/${lang === defaultLocale ? '' : lang + '/'}tags/${bookTag}/`}
-                            class="inline-block px-2 py-0.4 text-2.2 leading-none c-secondary/50 bg-secondary/4 rounded-full hover:c-secondary/70 hover:bg-secondary/8 transition-all duration-200 ease-out text-decoration-none whitespace-nowrap"
+                            class="book-tag-link"
                           >
                             {bookTag}
                           </a>
@@ -256,5 +267,13 @@ const yearsArray = sortedYears.map(year => [year, postsByYear.get(year)!] as con
   
   .timeline-line-post {
     height: 104%;
+  }
+  
+  .timeline-line {
+    background: #e5e5e5;
+  }
+  
+  html.dark .timeline-line {
+    background: oklch(40% 0.005 298 / 0.2);
   }
 </style>
