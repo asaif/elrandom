@@ -4,7 +4,6 @@ import { getCollection, render } from 'astro:content'
 import Comment from '@/components/Comment/Index.astro'
 import PostDate from '@/components/PostDate.astro'
 import TagList from '@/components/TagList.astro'
-import BackButton from '@/components/Widgets/BackButton.astro'
 import TOC from '@/components/Widgets/TOC.astro'
 import { allLocales, defaultLocale, moreLocales } from '@/config'
 import Layout from '@/layouts/Layout.astro'
@@ -107,48 +106,63 @@ const { Content, headings, remarkPluginFrontmatter } = await render(post)
   supportedLangs={supportedLangs}
 >
   <article class="heti">
-    <div class="relative">
-      <!-- Go Back Button On Desktop -->
-      <BackButton />
-      <!-- Title -->
-      <h1 class="post-title">
-        <span
-          transition:name={`post-${slug}${lang ? `-${lang}` : ''}`}
-          data-disable-theme-transition
-        >
-          {post.data.title}
-        </span>
-      </h1>
+    <!-- Back Button -->
+    <div class="mb-6">
+      <a href="/archive/" class="text-3.2 c-secondary/60 text-decoration-none transition-colors hover:c-primary font-serif">
+        ← Back to Posts
+      </a>
     </div>
 
-    <!-- Date -->
-    <div
-      id="post-date"
-      class="mb-17.2 block c-primary font-time"
-      transition:name={`time-${slug}${lang ? `-${lang}` : ''}`}
-      data-disable-theme-transition
-    >
-      <PostDate
-        date={post.data.published}
-        updatedDate={post.data.updated}
-        minutes={remarkPluginFrontmatter.minutes}
-      />
+    <!-- Title -->
+    <h1 class="post-title">
+      <span
+        transition:name={`post-${slug}${lang ? `-${lang}` : ''}`}
+        data-disable-theme-transition
+      >
+        {post.data.title}
+      </span>
+    </h1>
+
+    <!-- Decorative Line (Full Width) -->
+    <div class="mt-6 mb-4 h-0.25 w-full bg-secondary/25" />
+
+    <!-- Tags and Date Row -->
+    <div class="flex items-center justify-between mb-12 flex-wrap gap-4" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+      <!-- Tags -->
+      <div class="my-0">
+        {post.data.tags?.length > 0 ? (
+          <TagList
+            tags={post.data.tags}
+            lang={lang}
+          />
+        ) : (
+          <div></div>
+        )}
+      </div>
+
+      <!-- Date -->
+      <div
+        id="post-date"
+        class="c-secondary/60 font-time text-3.2"
+        transition:name={`time-${slug}${lang ? `-${lang}` : ''}`}
+        data-disable-theme-transition
+      >
+        <PostDate
+          date={post.data.published}
+          updatedDate={post.data.updated}
+          minutes={remarkPluginFrontmatter.minutes}
+        />
+      </div>
     </div>
+
     <!-- TOC -->
     {post.data.toc && <TOC headings={headings} />}
+
     <!-- Content -->
     <div id="post-content" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
       <Content />
       <!-- Copyright -->
       <div id="post-copyright" />
-      <!-- Tag List -->
-      {post.data.tags?.length > 0 && (
-        <div class="mt-12.6 uno-decorative-line" />
-        <TagList
-          tags={post.data.tags}
-          lang={lang}
-        />
-      )}
       <!-- Comment -->
       <Comment />
     </div>
